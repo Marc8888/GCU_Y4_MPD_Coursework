@@ -25,26 +25,37 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
 import com.marcwaugh.s1829721.mpdcw2.ui.rss_list.RssItemFragment;
+import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
+
+import java.util.List;
 
 public class FragmentActivityMap
 		extends Fragment
 		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener
 {
 	private View fragmentView = null;
-	private boolean isVisible = false;
+	private boolean mapReady = false;
 	private GoogleMap mMap;
 	private MainActivity.ApplicationMainActivity mainActivity;
+	private RssItemFragment rssItemFragment = null;
 
+	@DrawableRes
+	private int rssItemIcon = 0;
 
 	public FragmentActivityMap(MainActivity.ApplicationMainActivity appMainApp)
 	{
@@ -85,9 +96,12 @@ public class FragmentActivityMap
 			// Cleanup
 			mainActivity.setFabListener(null);
 			mainActivity.setNavbarListener(null);
-		}
 
-		isVisible = isVisibleToUser;
+			rssItemFragment = null;
+			rssItemIcon = 0;
+
+			mapReady = false;
+		}
 	}
 
 	/**
@@ -103,11 +117,9 @@ public class FragmentActivityMap
 	public void onMapReady(GoogleMap googleMap)
 	{
 		mMap = googleMap;
+		loadMarkersFromRss(rssItemFragment, rssItemIcon);
 
-		// Add a marker in Sydney and move the camera
-		LatLng sydney = new LatLng(-34, 151);
-		mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-		mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+		mapReady = true;
 	}
 
 	@Override
@@ -121,21 +133,28 @@ public class FragmentActivityMap
 	public boolean applicationNavbarClicked(MenuItem menuItem)
 	{
 		int id = menuItem.getItemId();
+
 		switch (id)
 		{
 			case R.id.navigation_roadworks:
 				Log.i("RssNavBarItemChanged", "Selected: Roadworks, Id = " + id);
 				mainActivity.setTitle("Roadworks");
+				rssItemFragment = mainActivity.getFragmentRss().getFragRssRoadworks();
+				rssItemIcon = R.drawable.ic_svg_noun_under_construction;
 				break;
 
 			case R.id.navigation_planned_roadworks:
 				Log.i("RssNavBarItemChanged", "Selected: Planned Roadworks, Id = " + id);
 				mainActivity.setTitle("Planned Roadworks");
+				rssItemFragment = mainActivity.getFragmentRss().getFragRssRoadworks();
+				rssItemIcon = R.drawable.ic_svg_noun_calendar;
 				break;
 
 			case R.id.navigation_current_incidents:
 				Log.i("RssNavBarItemChanged", "Selected: Current Incidents, Id = " + id);
 				mainActivity.setTitle("Current Incidents");
+				rssItemFragment = mainActivity.getFragmentRss().getFragRssCIncidents();
+				rssItemIcon = R.drawable.ic_svg_noun_road;
 				break;
 
 			default:
@@ -143,11 +162,53 @@ public class FragmentActivityMap
 				throw new RuntimeException("FragmentActivityRss: Unknown target load fragment id: " + id);
 		}
 
+		// If the map has already loaded load new markers
+		if (mapReady)
+			loadMarkersFromRss(rssItemFragment, rssItemIcon);
+
 		return true;
 	}
 
-	private void loadMarkersFromRss(RssItemFragment rssItems, @DrawableRes int id)
+	private void loadMarkersFromRss(RssItemFragment rssItems, @DrawableRes int drawableResourceId)
 	{
+		if (rssItems == null || drawableResourceId == -1 || drawableResourceId == 0)
+			throw new RuntimeException("FragmentActivityMap: RssItems or Drawable id is null!");
 
+		// Get the items
+		List<RssItem> listRssItems = rssItems.getRssItems();
+
+		// Check if we have no items, if none then just return
+		if (listRssItems.size() == 0)
+			return;
+
+		// Clear markers and overlays
+		mMap.clear();
+
+		// Calculate bounds to autozoom the map
+		LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+
+		// Display markers
+		BitmapDescriptor bdf = BitmapDescriptorFactory.fromResource(drawableResourceId);
+
+		for (RssItem rss : listRssItems)
+		{
+			LatLng location = new LatLng(rss.getGeorssLat(), rss.getGeorssLng());
+			Marker marker = mMap.addMarker(new MarkerOptions()
+					.position(location)
+					.title(rss.getTitle())
+					.snippet(rss.getDescription())
+					.icon(bdf));
+
+			// Add the latlng to the builder to create the bounds
+			boundsBuilder.include(location);
+		}
+
+		// Get the bounds
+		LatLngBounds bounds = boundsBuilder.build();
+
+		// Animate the camera zoom
+		int padding = 40; // Offset from edges of the map in pixels
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+		mMap.animateCamera(cameraUpdate);
 	}
 }

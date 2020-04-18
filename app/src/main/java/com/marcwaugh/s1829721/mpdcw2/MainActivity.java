@@ -126,18 +126,14 @@ public class MainActivity extends AppCompatActivity
 
 		// If we have an existing fragment and we are swapping to the same one
 		if (existingFragment != null && existingFragment == newFragment)
-		{
 			// Due to an issue of swapping to the map and back if we try to set the fragment to
 			//      the same as before it will cause an issue of it not being rendered
 			// The only fix to this I have found is to remove it first then re-add it.
 			fm.beginTransaction().remove(existingFragment).commit();
-		}
 
 		// Notify the existing fragment that we are removing it
 		else if (existingFragment instanceof IVisibilityChangedListener)
-		{
 			((IVisibilityChangedListener) existingFragment).onVisibilityChanged(false);
-		}
 
 		FragmentTransaction ft = fm.beginTransaction();
 		ft.setCustomAnimations(R.animator.fragment_slide_left_enter,

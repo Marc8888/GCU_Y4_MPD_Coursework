@@ -13,6 +13,11 @@
 
 package com.marcwaugh.s1829721.mpdcw2.xml;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class RssItem
 {
 	//<title>M90 J1 to J3</title>
@@ -28,6 +33,8 @@ public class RssItem
 	private String link;
 	private String georssPoint;
 	private String pubDate;
+
+	private String description_cleaned;
 
 	private double georssLat;
 	private double georssLng;
@@ -47,9 +54,9 @@ public class RssItem
 		return description;
 	}
 
-	public void setDescription(String description)
+	public String getDescription_Cleaned()
 	{
-		this.description = description;
+		return this.description_cleaned;
 	}
 
 	public String getLink()
@@ -100,5 +107,56 @@ public class RssItem
 	public void setGeorssLng(double georssLng)
 	{
 		this.georssLng = georssLng;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+
+		// Clean and format the description
+		String descFixed = description
+				.replace("<br />", "\n")
+				.replace("<br>", "\n")
+				.replace("<br/>", "\n");
+
+		String[] lines = descFixed.split("\n");
+		StringBuilder descriptionOutput = new StringBuilder();
+
+		SimpleDateFormat dateOutput = new SimpleDateFormat("dd MMMMM yyyy", Locale.UK);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy", Locale.UK);
+
+		for (String line : lines)
+		{
+			if (line.startsWith("Start Date: ")
+					|| line.startsWith("End Date: "))
+			{
+				String type = line.split(":")[0]; // "Start Date:" / "End Date:"
+				String text = line
+						.replace("Start Date: ", "")
+						.replace("End Date: ", "")
+						.split(" -")[0]  // Remove " - 00:00"
+						.split(", ")[1]; // Remove "Monday, "
+				try
+				{
+					Date d = dateFormat.parse(text);
+					descriptionOutput
+							.append(type)
+							.append(": ")
+							.append(text)
+							.append("\n");
+				}
+				catch (ParseException e)
+				{
+					e.printStackTrace();
+				}
+
+				continue;
+			}
+
+			descriptionOutput.append(line).append("\n");
+		}
+
+		String descriptionText = descriptionOutput.toString();
+		description_cleaned = descriptionText.substring(0, descriptionText.length() - 1);
 	}
 }
