@@ -1,7 +1,7 @@
 # ########## My Git Ignore
 
-/app/src/main/res/values/sensitive_keys.xml
-app/src/main/res/values/sensitive_keys.xml
+/app/src/main/res/values/sensitive_keys_gitignored.xml
+app/src/main/res/values/sensitive_keys_gitignored.xml
 
 #####################################
 

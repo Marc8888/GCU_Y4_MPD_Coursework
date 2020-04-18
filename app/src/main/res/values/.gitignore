@@ -1,3 +1,3 @@
 # Ignore sensitive keys
-./sensitive_keys.xml
-sensitive_keys.xml
+sensitive_keys_gitignored.xml
+sensitive_keys_gitignored.xml
