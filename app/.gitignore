@@ -1,2 +1,2 @@
 /build
-#src/main/re/values/sensitive_keys.xml
+/app/src/main/re/values/sensitive_keys.xml
