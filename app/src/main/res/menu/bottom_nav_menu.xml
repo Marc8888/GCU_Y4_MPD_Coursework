@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_roadworks"
+        android:icon="@drawable/ic_svg_noun_under_construction"
+        android:title="@string/title_roadworks" />
+
+    <item
+        android:id="@+id/navigation_current_incidents"
+        android:icon="@drawable/ic_svg_noun_road"
+        android:title="@string/title_current_incidents" />
+
+    <item
+        android:id="@+id/navigation_planned_roadworks"
+        android:icon="@drawable/ic_svg_noun_calendar"
+        android:title="@string/title_planned_roadworks" />
+
+</menu>

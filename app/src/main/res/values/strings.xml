@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">MW_CW_MPD</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <!-- TODO: Delete these! -->
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="title_roadworks">Roadworks</string>
+    <string name="title_planned_roadworks">Planned Rw\'s</string>
+    <string name="title_current_incidents">Current Incidents</string>
+
+    <string name="title_activity_main_nav">MainActivityNav</string>
+    <string name="toolbar_credits">Credits</string>
+
+    <string name="student_id">S1829721</string>
+    <string name="student_name">Marc Waugh</string>
+    <string name="button_OpenMap">Open Map</string>
+    <string name="title_activity_fragment_map">Map</string>
 </resources>

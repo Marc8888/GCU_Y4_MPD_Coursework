@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><!-- MPD XML Starter code Semester B Session 2018 2019 -->
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/salutation"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Scotland Traffic Application" />
+
+        <TextView
+            android:id="@+id/rawDataDisplay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Scotland's Traffic Road Works "
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Press to get Road Works Information" />
+
+        <TextView
+            android:id="@+id/planned_work"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Scotland's roadwork plan's" />
+
+        <Button
+            android:id="@+id/startButton2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Press to get Road works planned Information" />
+
+        <TextView
+            android:id="@+id/incidents"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Scotland's Current Incident information" />
+
+        <Button
+            android:id="@+id/startButton3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Press to get current Incidents Information" />
+
+
+    </LinearLayout>
+</ScrollView>

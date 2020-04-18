@@ -1,0 +1,19 @@
+NEEDS FIXED:
+- Changing back to the list view or map view the wrong object container is displayed (Fragment is loaded too soon!)
+- need to find an event which happens after our UI has been loaded.
+
+STARTED ON:
+- Add map to display user selected types (Checkboxes)
+
+TODO SHITE:
+Final touches to the list:
+- Modify card to make information more easily read (Split text into sections)
+
+After finished portrait version:
+- Start work on a landscape version
+- For the map possible show the current incidents as a sidebar list if the screen is large enough
+
+
+Final checks:
+- Add headers to each JAVA file
+- Add headers to each view (if not added)

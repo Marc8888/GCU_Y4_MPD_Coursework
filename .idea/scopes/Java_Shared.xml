@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Java Shared" pattern="*.java||src[app]:com.example.mw_cw_mpd..*" />
+</component>
