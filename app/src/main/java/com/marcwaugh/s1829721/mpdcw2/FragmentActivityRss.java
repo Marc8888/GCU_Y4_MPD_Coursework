@@ -1,3 +1,16 @@
+/*
+ * Copyright (c)  2020-2020, Marc Waugh
+ *
+ * File:		FragmentActivityRss.java
+ * Module:		Mobile Platform Development
+ * Date:		2020
+ * Student Id:	S1829721
+ *
+ * Please note that this copyright header might appear on CC assets such as
+ * SVG vector images/icons from 3rd parties. For files such as these their
+ * respective copyright notices can be found inside /LICENSES.txt
+ */
+
 package com.marcwaugh.s1829721.mpdcw2;
 
 
@@ -28,6 +41,18 @@ public class FragmentActivityRss extends Fragment
 	private RssItemFragment fragRssRoadworks = null;
 	private RssItemFragment fragRssRoadworksPlanned = null;
 	private RssItemFragment fragRssCIncidents = null;
+	private MainActivity.ApplicationMainActivity mainActivity;
+	private boolean isVisible = false;
+	private int targetLoadFragment = -1;
+
+	public FragmentActivityRss(MainActivity.ApplicationMainActivity appMainApp)
+	{
+		this.mainActivity = appMainApp;
+
+		fragRssRoadworks = RssItemFragment.newInstance(this, urlTSRoadWorks);
+		fragRssCIncidents = RssItemFragment.newInstance(this, urlTSCurrentIncidents);
+		fragRssRoadworksPlanned = RssItemFragment.newInstance(this, urlTSRoadWorksPlanned);
+	}
 
 	public RssItemFragment getFragRssRoadworks()
 	{
@@ -42,18 +67,6 @@ public class FragmentActivityRss extends Fragment
 	public RssItemFragment getFragRssCIncidents()
 	{
 		return fragRssCIncidents;
-	}
-
-	private MainActivity.ApplicationMainActivity mainActivity;
-	private boolean isVisible = false;
-
-	public FragmentActivityRss(MainActivity.ApplicationMainActivity appMainApp)
-	{
-		this.mainActivity = appMainApp;
-
-		fragRssRoadworks = RssItemFragment.newInstance(this, urlTSRoadWorks);
-		fragRssCIncidents = RssItemFragment.newInstance(this, urlTSCurrentIncidents);
-		fragRssRoadworksPlanned = RssItemFragment.newInstance(this, urlTSRoadWorksPlanned);
 	}
 
 	@Override
@@ -104,7 +117,6 @@ public class FragmentActivityRss extends Fragment
 		isVisible = isVisibleToUser;
 	}
 
-
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
 	                         @Nullable Bundle savedInstanceState)
 	{
@@ -119,8 +131,6 @@ public class FragmentActivityRss extends Fragment
 		// Setup fragments
 		setupFragments();
 	}
-
-	private int targetLoadFragment = -1;
 
 	private void setupFragments()
 	{

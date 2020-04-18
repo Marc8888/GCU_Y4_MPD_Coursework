@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
-  <settings>
+  <settings default="Marc Waugh GCC">
     <module2copyright>
-      <element module="Java Shared" copyright="Marc Waugh GCC" />
+      <element module="MPD3: Marc Waugh" copyright="Marc Waugh GCC" />
     </module2copyright>
   </settings>
 </component>

@@ -1,6 +1,6 @@
 <component name="CopyrightManager">
   <copyright>
-    <option name="notice" value="Student:     Marc Waugh&#10;Student Id:  S1829721&#10;&#10;Description&#10;&#10;" />
+    <option name="notice" value="Copyright (c)  2020-&amp;#36;{today.year}, Marc Waugh&#10;&#10;File:&#9;&#9;&amp;#36;file.fileName&#10;Module:&#9;&#9;Mobile Platform Development&#10;Date:&#9;&#9;2020&#10;Student Id:&#9;S1829721&#10;&#10;Please note that this copyright header might appear on CC assets such as &#10;SVG vector images/icons from 3rd parties. For files such as these their &#10;respective copyright notices can be found inside /LICENSES.txt" />
     <option name="myName" value="Marc Waugh GCC" />
   </copyright>
 </component>

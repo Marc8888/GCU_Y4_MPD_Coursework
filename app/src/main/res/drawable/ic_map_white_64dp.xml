@@ -1,3 +1,16 @@
+<!--
+  ~ Copyright (c)  2020-2020, Marc Waugh
+  ~
+  ~ File:		ic_map_white_64dp.xml
+  ~ Module:		Mobile Platform Development
+  ~ Date:		2020
+  ~ Student Id:	S1829721
+  ~
+  ~ Please note that this copyright header might appear on CC assets such as
+  ~ SVG vector images/icons from 3rd parties. For files such as these their
+  ~ respective copyright notices can be found inside /LICENSES.txt
+  -->
+
 <vector android:height="64dp"
     android:tint="#FFFFFF"
     android:viewportHeight="24.0"

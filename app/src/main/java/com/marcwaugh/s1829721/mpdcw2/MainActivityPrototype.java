@@ -1,4 +1,17 @@
 /*
+ * Copyright (c)  2020-2020, Marc Waugh
+ *
+ * File:		MainActivityPrototype.java
+ * Module:		Mobile Platform Development
+ * Date:		2020
+ * Student Id:	S1829721
+ *
+ * Please note that this copyright header might appear on CC assets such as
+ * SVG vector images/icons from 3rd parties. For files such as these their
+ * respective copyright notices can be found inside /LICENSES.txt
+ */
+
+/*
  * Student:     Marc Waugh
  * Student Id:  S1829721
  *
@@ -29,16 +42,13 @@ public class MainActivityPrototype
 		extends AppCompatActivity
 		implements View.OnClickListener, IXmlFinishedEventListener, IXmlErrorEventListener
 {
-	private String result;
-	private TextView rawDataDisplay;
-	private Button startButton;
-
-
 	// Traffic Scotland URLs
 	private static final String urlTSRoadWorks = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
 	private static final String urlTSRoadWorksPlanned = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
 	private static final String urlTSCurrentIncidents = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
-
+	private String result;
+	private TextView rawDataDisplay;
+	private Button startButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)

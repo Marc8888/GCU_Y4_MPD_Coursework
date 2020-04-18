@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c)  2020-2020, Marc Waugh
+  ~
+  ~ File:		fragment_rss_item.xml
+  ~ Module:		Mobile Platform Development
+  ~ Date:		2020
+  ~ Student Id:	S1829721
+  ~
+  ~ Please note that this copyright header might appear on CC assets such as
+  ~ SVG vector images/icons from 3rd parties. For files such as these their
+  ~ respective copyright notices can be found inside /LICENSES.txt
+  -->
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
