@@ -91,13 +91,6 @@ public class RssItemFragment extends Fragment
 		return mRssItems;
 	}
 
-	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser)
-	{
-		super.setUserVisibleHint(isVisibleToUser);
-		Log.i("FragmentActivityRss", "setUserVisibleHint: " + isVisibleToUser + ", " + mUrlEndpoint);
-	}
-
 	public void refreshDataset()
 	{
 		// Only allow one instance to run!

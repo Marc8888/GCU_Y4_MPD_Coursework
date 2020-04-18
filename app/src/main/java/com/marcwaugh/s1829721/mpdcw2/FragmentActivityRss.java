@@ -13,7 +13,6 @@
 
 package com.marcwaugh.s1829721.mpdcw2;
 
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +26,12 @@ import androidx.fragment.app.Fragment;
 
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
+import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
 import com.marcwaugh.s1829721.mpdcw2.ui.rss_list.RssItemFragment;
 import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
 
 public class FragmentActivityRss extends Fragment
-		implements RssItemFragment.OnListFragmentInteractionListener, IApplicationNavbarListener, IApplicationFabListener
+		implements RssItemFragment.OnListFragmentInteractionListener, IApplicationNavbarListener, IApplicationFabListener, IVisibilityChangedListener
 {
 	private static final String urlTSRoadWorks = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
 	private static final String urlTSRoadWorksPlanned = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
@@ -76,10 +76,9 @@ public class FragmentActivityRss extends Fragment
 	}
 
 	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser)
+	public void onVisibilityChanged(boolean isVisibleToUser)
 	{
-		super.setUserVisibleHint(isVisibleToUser);
-		Log.i("FragmentActivityRss", "setUserVisibleHint: " + isVisibleToUser);
+		Log.i("FragmentActivityRss", "onVisibilityChanged: " + isVisibleToUser);
 
 		if (isVisibleToUser)
 		{

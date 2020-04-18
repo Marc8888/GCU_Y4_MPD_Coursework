@@ -33,9 +33,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
+import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
 import com.marcwaugh.s1829721.mpdcw2.ui.rss_list.RssItemFragment;
 
-public class FragmentActivityMap extends Fragment implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener
+public class FragmentActivityMap
+		extends Fragment
+		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener
 {
 	private View fragmentView = null;
 	private boolean isVisible = false;
@@ -63,9 +66,8 @@ public class FragmentActivityMap extends Fragment implements OnMapReadyCallback,
 	}
 
 	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser)
+	public void onVisibilityChanged(boolean isVisibleToUser)
 	{
-		super.setUserVisibleHint(isVisibleToUser);
 		Log.i("FragmentActivityRss", "setUserVisibleHint: " + isVisibleToUser);
 
 		if (isVisibleToUser)

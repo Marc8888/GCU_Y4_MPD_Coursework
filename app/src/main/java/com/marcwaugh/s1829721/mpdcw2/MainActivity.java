@@ -32,6 +32,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
+import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -111,33 +112,6 @@ public class MainActivity extends AppCompatActivity
 		transitionFragment(fragRssItems);
 	}
 
-//	private void transitionFragment(Fragment newFragment) {
-//		// Get the existing fragment and check if we are changing to the same fragment
-//		Fragment existingFragment = getSupportFragmentManager().findFragmentById(R.id.frag_mainactivity);
-//		if (existingFragment != null && existingFragment == newFragment) {
-//			// Notify the fragment we are visible
-//			existingFragment.setUserVisibleHint(true);
-//			return;
-//		}
-//
-//		// Add the fragment to the activity, pushing this transaction
-//		// on to the back stack.
-//		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//		ft.setCustomAnimations(R.animator.fragment_slide_left_enter,
-//				R.animator.fragment_slide_left_exit,
-//				R.animator.fragment_slide_right_enter,
-//				R.animator.fragment_slide_right_exit);
-//
-//		if (existingFragment != null)
-//			existingFragment.setUserVisibleHint(false);
-//
-//		ft.replace(R.id.frag_mainactivity, newFragment);
-//		ft.addToBackStack(null);
-//		ft.commit();
-//
-//		newFragment.setUserVisibleHint(true);
-//	}
-
 	private void transitionFragment(Fragment newFragment)
 	{
 		transitionFragment(newFragment, R.id.frag_mainactivity);
@@ -146,14 +120,6 @@ public class MainActivity extends AppCompatActivity
 	private void transitionFragment(Fragment newFragment, @IdRes int fragmentContainer)
 	{
 		FragmentManager fm = getSupportFragmentManager();
-
-		// If we don't have a fragment manager
-		if (getSupportFragmentManager() == null)
-		{
-			// Error checking / handling.
-			Log.e("MainActivity", "transitionFragment: getSupportFragmentManager() == null");
-			throw new RuntimeException("MainActivity: getSupportFragmentManager() == null! Cannot continue operation");
-		}
 
 		// Get the existing fragment and check if we are changing to the same fragment
 		Fragment existingFragment = fm.findFragmentById(fragmentContainer);
@@ -168,9 +134,9 @@ public class MainActivity extends AppCompatActivity
 		}
 
 		// Notify the existing fragment that we are removing it
-		else if (existingFragment != null)
+		else if (existingFragment instanceof IVisibilityChangedListener)
 		{
-			existingFragment.setUserVisibleHint(false);
+			((IVisibilityChangedListener) existingFragment).onVisibilityChanged(false);
 		}
 
 		FragmentTransaction ft = fm.beginTransaction();
@@ -184,7 +150,8 @@ public class MainActivity extends AppCompatActivity
 		ft.addToBackStack(null); // TODO: Add to the back stack
 		ft.commit();
 
-		newFragment.setUserVisibleHint(true);
+		if (newFragment instanceof IVisibilityChangedListener)
+			((IVisibilityChangedListener) newFragment).onVisibilityChanged(true);
 	}
 
 	public static class ApplicationMainActivity
