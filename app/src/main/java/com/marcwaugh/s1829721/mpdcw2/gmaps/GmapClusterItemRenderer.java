@@ -38,7 +38,6 @@ public class GmapClusterItemRenderer extends DefaultClusterRenderer<GmapClusterI
 		clusterManager.setRenderer(this);
 	}
 
-
 	@Override
 	protected void onBeforeClusterItemRendered(GmapClusterItem markerItem, MarkerOptions markerOptions)
 	{
@@ -56,7 +55,12 @@ public class GmapClusterItemRenderer extends DefaultClusterRenderer<GmapClusterI
 	{
 		//super.onClusterItemUpdated(item, marker);
 
+		// The cluster renderer has an issue inside its default logic where a marker's text is null by default
+		// after searching i had found this fix posted on github.
+
 		/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//
+		//  Source / Credits: https://gist.github.com/CallumCarmicheal/d8dcb36b2ec394d960f4c0c93d560d9d
 		//
 		// Replaced logic with a fix due to a bug where the marker .getTitle is null!
 		// This is the code from inside the com.google.maps.android.clustering.view.DefaultClusterRenderer class licensed under apache
@@ -88,14 +92,14 @@ public class GmapClusterItemRenderer extends DefaultClusterRenderer<GmapClusterI
 		// Update marker text if the item text changed - same logic as adding marker in CreateMarkerTask.perform()
 		if (item.getTitle() != null || item.getSnippet() != null)
 		{
-			// MW: FIX for issue where marker.getTitle is null
+			// FIX: FIX for issue where marker.getTitle is null
 			if (marker.getTitle() == null || !marker.getTitle().equals(item.getTitle()))
 			{
 				marker.setTitle(item.getTitle());
 				changed = true;
 			}
 
-			// MW: FIX for issue where marker.getSnippet is null
+			// FIX: FIX for issue where marker.getSnippet is null
 			if (marker.getSnippet() == null || !marker.getSnippet().equals(item.getSnippet()))
 			{
 				marker.setSnippet(item.getSnippet());
