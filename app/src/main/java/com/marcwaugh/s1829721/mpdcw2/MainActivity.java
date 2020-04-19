@@ -32,7 +32,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
+import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationPermissionResultListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -126,6 +131,13 @@ public class MainActivity extends AppCompatActivity
 		// This also causes issues the way we handle fragments
 	}
 
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+	                                       String permissions[], int[] grantResults)
+	{
+		this.appMainApp.invokePermissionListeners(requestCode, permissions, grantResults);
+	}
+
 	private void transitionFragment(Fragment newFragment, @IdRes int fragmentContainer)
 	{
 		FragmentManager fm = getSupportFragmentManager();
@@ -168,10 +180,13 @@ public class MainActivity extends AppCompatActivity
 		private MainActivity app;
 		private IApplicationNavbarListener navbarListener = null;
 		private IApplicationFabListener fabListener = null;
+		private List<IApplicationPermissionResultListener> permissionListeners = null;
 
 		ApplicationMainActivity(MainActivity app)
 		{
 			this.app = app;
+
+			permissionListeners = new ArrayList<IApplicationPermissionResultListener>();
 		}
 
 		public void setTitle(String text)
@@ -248,6 +263,33 @@ public class MainActivity extends AppCompatActivity
 		public FragmentActivityRss getFragmentRss()
 		{
 			return app.fragRssItems;
+		}
+
+		public MainActivity getMainActivity()
+		{
+			return app;
+		}
+
+		public void addPermissionListener(IApplicationPermissionResultListener resultListener)
+		{
+			if (permissionListeners.contains(resultListener)) return;
+			permissionListeners.add(resultListener);
+		}
+
+		public void removePermissionListener(IApplicationPermissionResultListener resultListener)
+		{
+			if (resultListener != null)
+				permissionListeners.remove(resultListener);
+		}
+
+		private void invokePermissionListeners(int requestCode, String[] permissions, int[] grantResults)
+		{
+			permissionListeners.removeAll(Collections.singleton(null));
+			for (IApplicationPermissionResultListener listener : permissionListeners)
+			{
+				if (listener != null)
+					listener.onRequestPermissionResult(requestCode, permissions, grantResults);
+			}
 		}
 	}
 }

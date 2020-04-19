@@ -25,7 +25,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +37,8 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.ClusterRenderer;
 import com.marcwaugh.s1829721.mpdcw2.gmaps.GmapClusterItem;
 import com.marcwaugh.s1829721.mpdcw2.gmaps.GmapClusterItemRenderer;
+import com.marcwaugh.s1829721.mpdcw2.gmaps.GoogleMapsLocationHandler;
+import com.marcwaugh.s1829721.mpdcw2.gmaps.IFragmentLocationWantingMap;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
@@ -47,17 +48,13 @@ import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
 import java.util.Date;
 import java.util.List;
 
-public class FragmentActivityMap
-		extends
-		Fragment
-		implements
-		OnMapReadyCallback,
-		IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener
+public class FragmentActivityMap extends Fragment
+		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener, IFragmentLocationWantingMap
 {
 	private Date lastTransitionDate;
 	private boolean mapReady = false;
 	private GoogleMap mMap;
-	private GoogleApiClient mGoogleApiClient;
+	private GoogleMapsLocationHandler locationHandler;
 	private ClusterManager<GmapClusterItem> mClusterManager;
 
 	private MainActivity.ApplicationMainActivity mainActivity;
@@ -69,6 +66,7 @@ public class FragmentActivityMap
 	public FragmentActivityMap(MainActivity.ApplicationMainActivity appMainApp)
 	{
 		this.mainActivity = appMainApp;
+		this.locationHandler = new GoogleMapsLocationHandler(this);
 		this.lastTransitionDate = new Date();
 	}
 
@@ -127,11 +125,12 @@ public class FragmentActivityMap
 	public void onMapReady(GoogleMap googleMap)
 	{
 		mMap = googleMap;
-
 		mMap.clear();
 
 		if (getContext() == null)
 			throw new RuntimeException("FragmentActivityMap: Context is null!");
+
+		this.locationHandler.onMapReady();
 
 		// Create a cluster manager and it's renderer
 		mClusterManager = new ClusterManager<>(getContext(), mMap);
@@ -262,5 +261,17 @@ public class FragmentActivityMap
 		int padding = 100; // Offset from edges of the map in pixels
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 		mMap.animateCamera(cameraUpdate);
+	}
+
+	@Override
+	public GoogleMap getGMapInstance()
+	{
+		return mMap;
+	}
+
+	@Override
+	public MainActivity getMainActivity()
+	{
+		return mainActivity.getMainActivity();
 	}
 }

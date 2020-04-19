@@ -1,7 +1,7 @@
 /*
  * Copyright (c)  2020-2020, Marc Waugh
  *
- * File:		IFragmentLocationWantingMap.java
+ * File:		IApplicationPermissionResultListener.java
  * Module:		Mobile Platform Development
  * Date:		2020
  * Student Id:	S1829721
@@ -11,19 +11,9 @@
  * respective copyright notices can be found inside /LICENSES.txt
  */
 
-package com.marcwaugh.s1829721.mpdcw2.gmaps;
+package com.marcwaugh.s1829721.mpdcw2.listenerinterfaces;
 
-import android.content.Context;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.marcwaugh.s1829721.mpdcw2.MainActivity;
-
-public interface IFragmentLocationWantingMap
+public interface IApplicationPermissionResultListener
 {
-	Context getContext();
-
-	GoogleMap getGMapInstance();
-
-	MainActivity getMainActivity();
-
+	void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults);
 }
