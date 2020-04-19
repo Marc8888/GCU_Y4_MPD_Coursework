@@ -43,14 +43,20 @@ import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListen
 import com.marcwaugh.s1829721.mpdcw2.ui.rss_list.RssItemFragment;
 import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
 
+import java.util.Date;
 import java.util.List;
 
 public class FragmentActivityMap
-		extends Fragment
-		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener
+		extends
+		Fragment
+		implements
+		OnMapReadyCallback,
+		IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener
 {
+	private Date lastTransitionDate;
 	private boolean mapReady = false;
 	private GoogleMap mMap;
+	private GoogleApiClient mGoogleApiClient;
 	private ClusterManager<GmapClusterItem> mClusterManager;
 
 	private MainActivity.ApplicationMainActivity mainActivity;
@@ -62,6 +68,7 @@ public class FragmentActivityMap
 	public FragmentActivityMap(MainActivity.ApplicationMainActivity appMainApp)
 	{
 		this.mainActivity = appMainApp;
+		this.lastTransitionDate = new Date();
 	}
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
@@ -141,8 +148,16 @@ public class FragmentActivityMap
 	@Override
 	public void applicationFabClicked()
 	{
-		// Swap to the list view
-		mainActivity.transitionFragment(mainActivity.getFragmentRss());
+		// Limit the list / map changing to every few second(s), this will stop any potential crashes
+		Date now = new Date();
+		long milliseconds = (now.getTime() - lastTransitionDate.getTime());// / 1000 % 60;
+		if (milliseconds > 1000)
+		{
+			lastTransitionDate = new Date();
+
+			// Swap to the list view
+			mainActivity.transitionFragment(mainActivity.getFragmentRss());
+		}
 	}
 
 	@Override
@@ -191,25 +206,26 @@ public class FragmentActivityMap
 		super.onStart();
 
 		// If the map has already loaded load new markers
-		if (mapReady) loadMarkersFromRss(rssItemFragment, rssItemIcon);
+		if (mapReady)
+			loadMarkersFromRss(rssItemFragment, rssItemIcon);
 	}
 
 	private void loadMarkersFromRss(RssItemFragment rssItems, @DrawableRes int drawableResourceId)
 	{
 		if (rssItems == null || drawableResourceId == -1 || drawableResourceId == 0)
+			//throw new RuntimeException("FragmentActivityMap: RssItems or Drawable id is null!");
 			return;
-		//throw new RuntimeException("FragmentActivityMap: RssItems or Drawable id is null!");
 
 		// Get the items
 		List<RssItem> listRssItems = rssItems.getRssItems();
 
 		// Clear markers from cluster
 		mClusterManager.clearItems();
+
 		// Check if we have no items, if none then just return
 		if (listRssItems.size() == 0)
 		{
 			mClusterManager.cluster();
-
 			return;
 		}
 
@@ -242,7 +258,7 @@ public class FragmentActivityMap
 		LatLngBounds bounds = boundsBuilder.build();
 
 		// Animate the camera zoom
-		int padding = 40; // Offset from edges of the map in pixels
+		int padding = 100; // Offset from edges of the map in pixels
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 		mMap.animateCamera(cameraUpdate);
 	}

@@ -30,6 +30,8 @@ import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListen
 import com.marcwaugh.s1829721.mpdcw2.ui.rss_list.RssItemFragment;
 import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
 
+import java.util.Date;
+
 public class FragmentActivityRss extends Fragment
 		implements RssItemFragment.OnListFragmentInteractionListener, IApplicationNavbarListener, IApplicationFabListener, IVisibilityChangedListener
 {
@@ -44,10 +46,12 @@ public class FragmentActivityRss extends Fragment
 	private MainActivity.ApplicationMainActivity mainActivity;
 	private boolean isVisible = false;
 	private int targetLoadFragment = -1;
+	private Date lastTransitionDate;
 
 	public FragmentActivityRss(MainActivity.ApplicationMainActivity appMainApp)
 	{
 		this.mainActivity = appMainApp;
+		lastTransitionDate = new Date();
 
 		fragRssRoadworks = RssItemFragment.newInstance(this, urlTSRoadWorks);
 		fragRssCIncidents = RssItemFragment.newInstance(this, urlTSCurrentIncidents);
@@ -101,16 +105,6 @@ public class FragmentActivityRss extends Fragment
 			// Cleanup
 			mainActivity.setFabListener(null);
 			mainActivity.setNavbarListener(null);
-
-			// Notify the child fragment that it is not visible
-			if (getActivity().getSupportFragmentManager() != null)
-			{
-				Fragment existingFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.frag_rss_nav_host);
-				if (existingFragment != null)
-				{
-					existingFragment.setUserVisibleHint(false);
-				}
-			}
 		}
 
 		isVisible = isVisibleToUser;
@@ -178,7 +172,15 @@ public class FragmentActivityRss extends Fragment
 	@Override
 	public void applicationFabClicked()
 	{
-		// Swap to map view
-		mainActivity.transitionFragment(mainActivity.getFragmentGMap());
+		// Limit the list / map changing to every few second(s), this will stop any potential crashes
+		Date now = new Date();
+		long milliseconds = (now.getTime() - lastTransitionDate.getTime());// / 1000 % 60;
+		if (milliseconds > 1000)
+		{
+			lastTransitionDate = new Date();
+
+			// Swap to map view
+			mainActivity.transitionFragment(mainActivity.getFragmentGMap());
+		}
 	}
 }
