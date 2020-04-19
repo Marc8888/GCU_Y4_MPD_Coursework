@@ -117,6 +117,15 @@ public class MainActivity extends AppCompatActivity
 		transitionFragment(newFragment, R.id.frag_mainactivity);
 	}
 
+	@Override
+	public void onBackPressed()
+	{
+		// Disable back button
+		//      this is not needed as the application uses
+		//      very few activity changes
+		// This also causes issues the way we handle fragments
+	}
+
 	private void transitionFragment(Fragment newFragment, @IdRes int fragmentContainer)
 	{
 		FragmentManager fm = getSupportFragmentManager();
@@ -129,7 +138,8 @@ public class MainActivity extends AppCompatActivity
 			// Due to an issue of swapping to the map and back if we try to set the fragment to
 			//      the same as before it will cause an issue of it not being rendered
 			// The only fix to this I have found is to remove it first then re-add it.
-			fm.beginTransaction().remove(existingFragment).commit();
+			//fm.beginTransaction().remove(existingFragment).commit();
+			fm.beginTransaction().replace(fragmentContainer, new Fragment()).commit();
 
 		// Notify the existing fragment that we are removing it
 		else if (existingFragment instanceof IVisibilityChangedListener)
@@ -143,7 +153,10 @@ public class MainActivity extends AppCompatActivity
 
 		// Add the fragment to the activity, pushing this transaction on to the back stack.
 		ft.replace(fragmentContainer, newFragment);
-		ft.addToBackStack(null); // TODO: Add to the back stack
+
+		if (!(existingFragment != null && existingFragment == newFragment))
+			ft.addToBackStack(null);
+
 		ft.commit();
 
 		if (newFragment instanceof IVisibilityChangedListener)

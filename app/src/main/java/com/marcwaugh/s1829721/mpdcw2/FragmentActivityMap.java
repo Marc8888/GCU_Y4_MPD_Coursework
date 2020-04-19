@@ -31,11 +31,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.ClusterRenderer;
+import com.marcwaugh.s1829721.mpdcw2.gmaps.GmapClusterItem;
+import com.marcwaugh.s1829721.mpdcw2.gmaps.GmapClusterItemRenderer;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
@@ -48,9 +49,10 @@ public class FragmentActivityMap
 		extends Fragment
 		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener
 {
-	private View fragmentView = null;
 	private boolean mapReady = false;
 	private GoogleMap mMap;
+	private ClusterManager<GmapClusterItem> mClusterManager;
+
 	private MainActivity.ApplicationMainActivity mainActivity;
 	private RssItemFragment rssItemFragment = null;
 
@@ -66,7 +68,7 @@ public class FragmentActivityMap
 	                         @Nullable ViewGroup container,
 	                         @Nullable Bundle savedInstanceState)
 	{
-		fragmentView = inflater.inflate(R.layout.fragment_activity_map, container, false);
+		View fragmentView = inflater.inflate(R.layout.fragment_activity_map, container, false);
 
 		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.frag_map_gmap);
 
@@ -117,8 +119,22 @@ public class FragmentActivityMap
 	public void onMapReady(GoogleMap googleMap)
 	{
 		mMap = googleMap;
-		loadMarkersFromRss(rssItemFragment, rssItemIcon);
 
+		mMap.clear();
+
+		if (getContext() == null)
+			throw new RuntimeException("FragmentActivityMap: Context is null!");
+
+		// Create a cluster manager and it's renderer
+		mClusterManager = new ClusterManager<>(getContext(), mMap);
+		ClusterRenderer clusterRenderer = new GmapClusterItemRenderer(getContext(), googleMap, mClusterManager);
+
+		// Point the map's listeners at the listeners implemented by the cluster
+		// manager.
+		mMap.setOnCameraIdleListener(mClusterManager);
+		mMap.setOnMarkerClickListener(mClusterManager);
+
+		loadMarkersFromRss(rssItemFragment, rssItemIcon);
 		mapReady = true;
 	}
 
@@ -146,7 +162,7 @@ public class FragmentActivityMap
 			case R.id.navigation_planned_roadworks:
 				Log.i("RssNavBarItemChanged", "Selected: Planned Roadworks, Id = " + id);
 				mainActivity.setTitle("Planned Roadworks");
-				rssItemFragment = mainActivity.getFragmentRss().getFragRssRoadworks();
+				rssItemFragment = mainActivity.getFragmentRss().getFragRssRoadworksPlanned();
 				rssItemIcon = R.drawable.ic_svg_noun_calendar;
 				break;
 
@@ -169,39 +185,58 @@ public class FragmentActivityMap
 		return true;
 	}
 
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+
+		// If the map has already loaded load new markers
+		if (mapReady) loadMarkersFromRss(rssItemFragment, rssItemIcon);
+	}
+
 	private void loadMarkersFromRss(RssItemFragment rssItems, @DrawableRes int drawableResourceId)
 	{
 		if (rssItems == null || drawableResourceId == -1 || drawableResourceId == 0)
-			throw new RuntimeException("FragmentActivityMap: RssItems or Drawable id is null!");
+			return;
+		//throw new RuntimeException("FragmentActivityMap: RssItems or Drawable id is null!");
 
 		// Get the items
 		List<RssItem> listRssItems = rssItems.getRssItems();
 
+		// Clear markers from cluster
+		mClusterManager.clearItems();
 		// Check if we have no items, if none then just return
 		if (listRssItems.size() == 0)
-			return;
+		{
+			mClusterManager.cluster();
 
-		// Clear markers and overlays
-		mMap.clear();
+			return;
+		}
 
 		// Calculate bounds to autozoom the map
 		LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
 
 		// Display markers
-		BitmapDescriptor bdf = BitmapDescriptorFactory.fromResource(drawableResourceId);
+		BitmapDescriptor bdf = GmapClusterItemRenderer.BitmapDescriptorFromVector(getContext(), drawableResourceId);
 
 		for (RssItem rss : listRssItems)
 		{
 			LatLng location = new LatLng(rss.getGeorssLat(), rss.getGeorssLng());
-			Marker marker = mMap.addMarker(new MarkerOptions()
-					.position(location)
-					.title(rss.getTitle())
-					.snippet(rss.getDescription())
-					.icon(bdf));
+			GmapClusterItem clusterItem = new GmapClusterItem(
+					location,
+					rss.getTitle(),
+					rss.getDescription_Cleaned(),
+					bdf);
+
+			// Add the marker to the cluster manager
+			mClusterManager.addItem(clusterItem);
 
 			// Add the latlng to the builder to create the bounds
 			boundsBuilder.include(location);
 		}
+
+		// Render the cluster items
+		mClusterManager.cluster();
 
 		// Get the bounds
 		LatLngBounds bounds = boundsBuilder.build();

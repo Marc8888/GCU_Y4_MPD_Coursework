@@ -47,6 +47,7 @@ public class RssItem
 	public void setTitle(String title)
 	{
 		this.title = title;
+		if (this.title != null) this.title = this.title.trim();
 	}
 
 	public String getDescription()
@@ -112,9 +113,12 @@ public class RssItem
 	public void setDescription(String description)
 	{
 		this.description = description;
+		if (description == null) return;
+
 
 		// Clean and format the description
 		String descFixed = description
+				.trim()
 				.replace("<br />", "\n")
 				.replace("<br>", "\n")
 				.replace("<br/>", "\n");
