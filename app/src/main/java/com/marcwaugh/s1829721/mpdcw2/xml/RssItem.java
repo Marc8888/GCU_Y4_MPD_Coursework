@@ -13,8 +13,7 @@
 
 package com.marcwaugh.s1829721.mpdcw2.xml;
 
-public class RssItem
-{
+public class RssItem {
 	//<title>M90 J1 to J3</title>
 	//<description>...</description>
 	//<link>http://tscot.org/03cFB2019704</link>
@@ -34,75 +33,17 @@ public class RssItem
 	private double georssLat;
 	private double georssLng;
 
-	public String getTitle()
-	{
+	public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		this.title = title;
 		if (this.title != null) this.title = this.title.trim();
 	}
 
-	public String getDescription()
-	{
+	public String getDescription() {
 		return description;
-	}
-
-	public String getDescription_Cleaned()
-	{
-		return this.description_cleaned;
-	}
-
-	public String getLink()
-	{
-		return link;
-	}
-
-	public void setLink(String link)
-	{
-		this.link = link;
-	}
-
-	public String getGeorssPoint()
-	{
-		return georssPoint;
-	}
-
-	public void setGeorssPoint(String georssPoint)
-	{
-		this.georssPoint = georssPoint;
-	}
-
-	public String getPubDate()
-	{
-		return pubDate;
-	}
-
-	public void setPubDate(String pubDate)
-	{
-		this.pubDate = pubDate;
-	}
-
-	public double getGeorssLat()
-	{
-		return georssLat;
-	}
-
-	public void setGeorssLat(double georssLat)
-	{
-		this.georssLat = georssLat;
-	}
-
-	public double getGeorssLng()
-	{
-		return georssLng;
-	}
-
-	public void setGeorssLng(double georssLng)
-	{
-		this.georssLng = georssLng;
 	}
 
 	/**
@@ -110,8 +51,7 @@ public class RssItem
 	 *
 	 * @param description
 	 */
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		// Set the description
 		this.description = description;
 		if (description == null) return;
@@ -135,14 +75,12 @@ public class RssItem
 
 		// Do various text changes to make the description text look more user friendly.
 		//
-		for (String txtLine : arrLines)
-		{
+		for (String txtLine : arrLines) {
 			String line = txtLine.trim();
 
 			// Replace the minutes from the date
 			if (line.startsWith("Start Date: ")
-					|| line.startsWith("End Date: "))
-			{
+					|| line.startsWith("End Date: ")) {
 				String type = line.split(":")[0]; // "Start Date:" / "End Date:"
 				String text = line
 						.replace("Start Date: ", "")
@@ -169,8 +107,7 @@ public class RssItem
 				line = line.replace("Works:", "Works: ");
 
 			// Fix cases where "Traffic Management:" is not on its own line
-			if (line.contains("Traffic Management:") && !line.startsWith("Traffic Management"))
-			{
+			if (line.contains("Traffic Management:") && !line.startsWith("Traffic Management")) {
 				// This is a quick and dirty solution, its very jank but gets the job done
 
 				// We are fixing up the text formatting by splitting it into new lines.
@@ -178,8 +115,7 @@ public class RssItem
 
 				// Split by our line identifier $TM
 				String[] tm = line.split("/TM/");
-				for (String x : tm)
-				{
+				for (String x : tm) {
 					// Replace our variable /TRAFFIC/ with the traffic management text
 					x = x.replace("/TRAFFIC/", "Traffic Management: ");
 
@@ -195,5 +131,49 @@ public class RssItem
 
 		String descriptionText = descriptionOutput.toString();
 		description_cleaned = descriptionText.substring(0, descriptionText.length() - 1);
+	}
+
+	public String getDescription_Cleaned() {
+		return this.description_cleaned;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+
+	public String getGeorssPoint() {
+		return georssPoint;
+	}
+
+	public void setGeorssPoint(String georssPoint) {
+		this.georssPoint = georssPoint;
+	}
+
+	public String getPubDate() {
+		return pubDate;
+	}
+
+	public void setPubDate(String pubDate) {
+		this.pubDate = pubDate;
+	}
+
+	public double getGeorssLat() {
+		return georssLat;
+	}
+
+	public void setGeorssLat(double georssLat) {
+		this.georssLat = georssLat;
+	}
+
+	public double getGeorssLng() {
+		return georssLng;
+	}
+
+	public void setGeorssLng(double georssLng) {
+		this.georssLng = georssLng;
 	}
 }

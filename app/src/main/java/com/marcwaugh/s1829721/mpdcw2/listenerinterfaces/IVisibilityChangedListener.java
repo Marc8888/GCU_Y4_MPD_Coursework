@@ -13,7 +13,6 @@
 
 package com.marcwaugh.s1829721.mpdcw2.listenerinterfaces;
 
-public interface IVisibilityChangedListener
-{
+public interface IVisibilityChangedListener {
 	void onVisibilityChanged(boolean isVisibleToUser);
 }

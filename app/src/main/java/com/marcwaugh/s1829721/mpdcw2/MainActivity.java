@@ -39,30 +39,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
 	private FragmentActivityRss fragRssItems;
 	private FragmentActivityMap fragGMap;
+	private FragmentCredits fragCredits;
 
 	private ApplicationMainActivity appMainApp = null;
 
-	public MainActivity()
-	{
+	public MainActivity() {
 		appMainApp = new ApplicationMainActivity(this);
 	}
 
 	// Menu icons are inflated just as they were with actionbar
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
+	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.mainactivity_toolbar_menu, menu);
+
 		return true;
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -73,13 +71,11 @@ public class MainActivity extends AppCompatActivity
 		// Make sure the toolbar exists in the activity and is not null
 		setSupportActionBar(toolbar);
 
-		setupNavView();
+		setupMenus();
 		setupFragments();
 	}
 
-
-	private void setupNavView()
-	{
+	private void setupMenus() {
 		BottomNavigationView navView = findViewById(R.id.nav_view_mainactivity);
 
 		// Pass along the navbar event to the appropriate listener
@@ -88,10 +84,11 @@ public class MainActivity extends AppCompatActivity
 			Log.i("NavBarItemChanged", "Selected: " + item.getItemId());
 			return appMainApp.invokeNavbarListener(item);
 		});
+
+
 	}
 
-	private void setupFab()
-	{
+	private void setupFab() {
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_ma_MapToggle);
 
 		fab.setOnClickListener((v) ->
@@ -104,11 +101,11 @@ public class MainActivity extends AppCompatActivity
 		});
 	}
 
-	private void setupFragments()
-	{
+	private void setupFragments() {
 		// Setup fragments
 		fragRssItems = new FragmentActivityRss(appMainApp);
 		fragGMap = new FragmentActivityMap(appMainApp);
+		fragCredits = new FragmentCredits(appMainApp);
 
 		// Setup the map
 		setupFab();
@@ -117,14 +114,12 @@ public class MainActivity extends AppCompatActivity
 		transitionFragment(fragRssItems);
 	}
 
-	private void transitionFragment(Fragment newFragment)
-	{
+	private void transitionFragment(Fragment newFragment) {
 		transitionFragment(newFragment, R.id.frag_mainactivity);
 	}
 
 	@Override
-	public void onBackPressed()
-	{
+	public void onBackPressed() {
 		// Disable back button
 		//      this is not needed as the application uses
 		//      very few activity changes
@@ -133,13 +128,22 @@ public class MainActivity extends AppCompatActivity
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode,
-	                                       String permissions[], int[] grantResults)
-	{
+	                                       String permissions[], int[] grantResults) {
 		this.appMainApp.invokePermissionListeners(requestCode, permissions, grantResults);
 	}
 
-	private void transitionFragment(Fragment newFragment, @IdRes int fragmentContainer)
-	{
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.toolbarCredits:
+				transitionFragment(fragCredits);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void transitionFragment(Fragment newFragment, @IdRes int fragmentContainer) {
 		FragmentManager fm = getSupportFragmentManager();
 
 		// Get the existing fragment and check if we are changing to the same fragment
@@ -153,7 +157,7 @@ public class MainActivity extends AppCompatActivity
 			//fm.beginTransaction().remove(existingFragment).commit();
 			fm.beginTransaction().replace(fragmentContainer, new Fragment()).commit();
 
-		// Notify the existing fragment that we are removing it
+			// Notify the existing fragment that we are removing it
 		else if (existingFragment instanceof IVisibilityChangedListener)
 			((IVisibilityChangedListener) existingFragment).onVisibilityChanged(false);
 
@@ -175,118 +179,98 @@ public class MainActivity extends AppCompatActivity
 			((IVisibilityChangedListener) newFragment).onVisibilityChanged(true);
 	}
 
-	public static class ApplicationMainActivity
-	{
+	public static class ApplicationMainActivity {
 		private MainActivity app;
 		private IApplicationNavbarListener navbarListener = null;
 		private IApplicationFabListener fabListener = null;
 		private List<IApplicationPermissionResultListener> permissionListeners = null;
 
-		ApplicationMainActivity(MainActivity app)
-		{
+		ApplicationMainActivity(MainActivity app) {
 			this.app = app;
 
 			permissionListeners = new ArrayList<IApplicationPermissionResultListener>();
 		}
 
-		public void setTitle(String text)
-		{
+		public void setTitle(String text) {
 			app.setTitle(text);
 		}
 
-		public void setTitle(int textId)
-		{
+		public void setTitle(int textId) {
 			app.setTitle(textId);
 		}
 
-		public void setNavbarVisibility(boolean visibility)
-		{
+		public void setNavbarVisibility(boolean visibility) {
 			app.findViewById(R.id.nav_view_mainactivity).setVisibility(visibility ? View.VISIBLE : View.GONE);
 		}
 
 		@Nullable
-		public MenuItem getNavbarItem()
-		{
+		public MenuItem getNavbarItem() {
 			BottomNavigationView bottomNavigationView = (BottomNavigationView) app.findViewById(R.id.nav_view_mainactivity);
 			if (bottomNavigationView == null) return null;
 			return bottomNavigationView.getMenu().findItem(bottomNavigationView.getSelectedItemId());
 		}
 
-		public void setNavbarListener(IApplicationNavbarListener navbarListener)
-		{
+		public void setNavbarListener(IApplicationNavbarListener navbarListener) {
 			this.navbarListener = navbarListener;
 		}
 
-		private boolean invokeNavbarListener(MenuItem mi)
-		{
+		private boolean invokeNavbarListener(MenuItem mi) {
 			if (this.navbarListener != null)
 				return this.navbarListener.applicationNavbarClicked(mi);
 			return true;
 		}
 
-		public void setFabIcon(int resId)
-		{
+		public void setFabIcon(int resId) {
 			FloatingActionButton fab = (FloatingActionButton) app.findViewById(R.id.fab_ma_MapToggle);
 			if (fab == null) return;
 
 			fab.setImageResource(resId);
 		}
 
-		public void setFabListener(IApplicationFabListener fabListener)
-		{
+		public void setFabListener(IApplicationFabListener fabListener) {
 			this.fabListener = fabListener;
 		}
 
-		private void invokeFabListener()
-		{
+		private void invokeFabListener() {
 			if (fabListener != null)
 				fabListener.applicationFabClicked();
 		}
 
-		public void transitionFragment(Fragment fragment)
-		{
+		public void transitionFragment(Fragment fragment) {
 			// Switch to rss items
 			app.transitionFragment(fragment);
 		}
 
-		public void transitionFragment(Fragment fragment, @IdRes int fragmentContainer)
-		{
+		public void transitionFragment(Fragment fragment, @IdRes int fragmentContainer) {
 			// Switch to rss items
 			app.transitionFragment(fragment, fragmentContainer);
 		}
 
-		public FragmentActivityMap getFragmentGMap()
-		{
+		public FragmentActivityMap getFragmentGMap() {
 			return app.fragGMap;
 		}
 
-		public FragmentActivityRss getFragmentRss()
-		{
+		public FragmentActivityRss getFragmentRss() {
 			return app.fragRssItems;
 		}
 
-		public MainActivity getMainActivity()
-		{
+		public MainActivity getMainActivity() {
 			return app;
 		}
 
-		public void addPermissionListener(IApplicationPermissionResultListener resultListener)
-		{
+		public void addPermissionListener(IApplicationPermissionResultListener resultListener) {
 			if (permissionListeners.contains(resultListener)) return;
 			permissionListeners.add(resultListener);
 		}
 
-		public void removePermissionListener(IApplicationPermissionResultListener resultListener)
-		{
+		public void removePermissionListener(IApplicationPermissionResultListener resultListener) {
 			if (resultListener != null)
 				permissionListeners.remove(resultListener);
 		}
 
-		private void invokePermissionListeners(int requestCode, String[] permissions, int[] grantResults)
-		{
+		private void invokePermissionListeners(int requestCode, String[] permissions, int[] grantResults) {
 			permissionListeners.removeAll(Collections.singleton(null));
-			for (IApplicationPermissionResultListener listener : permissionListeners)
-			{
+			for (IApplicationPermissionResultListener listener : permissionListeners) {
 				if (listener != null)
 					listener.onRequestPermissionResult(requestCode, permissions, grantResults);
 			}

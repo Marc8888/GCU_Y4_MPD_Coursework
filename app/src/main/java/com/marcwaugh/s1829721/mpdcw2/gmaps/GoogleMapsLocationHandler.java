@@ -28,69 +28,58 @@ import com.marcwaugh.s1829721.mpdcw2.MainActivity;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationPermissionResultListener;
 
 public class GoogleMapsLocationHandler
-		implements IApplicationPermissionResultListener
-{
+		implements IApplicationPermissionResultListener {
 	private static final int PERM_REQUEST_LOCATION = 99;
 	private IFragmentLocationWantingMap mMapFragment;
 
-	public GoogleMapsLocationHandler(IFragmentLocationWantingMap fragmentMap)
-	{
+	public GoogleMapsLocationHandler(IFragmentLocationWantingMap fragmentMap) {
 		this.mMapFragment = fragmentMap;
 
 		// Register the permission listener
 		mMapFragment.getApplication().addPermissionListener(this);
 	}
 
-	protected void finalize()
-	{
+	protected void finalize() {
 		// Remove the permission listener
 		mMapFragment.getApplication().removePermissionListener(this);
 	}
 
-	public void onMapReady()
-	{
+	public void onMapReady() {
 		// Get the google maps instance
 		GoogleMap map = mMapFragment.getGMapInstance();
 
 		// Check if we need to ask for permission,
 		//      if not then just enable location services.
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-		{
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			if (ContextCompat.checkSelfPermission(mMapFragment.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-					== PackageManager.PERMISSION_GRANTED)
-			{
+					== PackageManager.PERMISSION_GRANTED) {
 				// Location Permission already granted, enable services
 				map.setMyLocationEnabled(true);
 			}
-			else
-			{
+			else {
 				// Request Location Permission
 				checkLocationPermission();
 			}
 		}
-		else
-		{
+		else {
 			// Enable location services
 			map.setMyLocationEnabled(true);
 		}
 	}
 
 
-	private void checkLocationPermission()
-	{
+	private void checkLocationPermission() {
 		// Get context and activity
 		Context ctx = mMapFragment.getContext();
 		MainActivity activity = mMapFragment.getApplication().getMainActivity();
 
 		if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
-				!= PackageManager.PERMISSION_GRANTED)
-		{
+				!= PackageManager.PERMISSION_GRANTED) {
 			// Should a permission explanation be displayed
 			//  eg    "Let this application show your location"
 			// why -> "We want to display your location on a route"
 			if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-					Manifest.permission.ACCESS_FINE_LOCATION))
-			{
+					Manifest.permission.ACCESS_FINE_LOCATION)) {
 
 				// Show an explanation to the user *asynchronously* -- don't block
 				// this thread waiting for the user's response! After the user
@@ -109,8 +98,7 @@ public class GoogleMapsLocationHandler
 						.create()
 						.show();
 			}
-			else
-			{
+			else {
 				// No explanation needed, we can request the permission.
 				ActivityCompat.requestPermissions(mMapFragment.getApplication().getMainActivity(),
 						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -120,22 +108,18 @@ public class GoogleMapsLocationHandler
 	}
 
 	@Override
-	public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults)
-	{
+	public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
 		// If the request is our perm id.
-		if (requestCode == PERM_REQUEST_LOCATION)
-		{
+		if (requestCode == PERM_REQUEST_LOCATION) {
 			// If the results are empty then the request was denied,
 			//   if not check if our permission is granted
-			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-			{
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				// Permission was granted
 				if (ContextCompat.checkSelfPermission(mMapFragment.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
 						== PackageManager.PERMISSION_GRANTED)
 					mMapFragment.getGMapInstance().setMyLocationEnabled(true);
 			}
-			else
-			{
+			else {
 				// Permission has been denied, disable MyLocation.
 				mMapFragment.getGMapInstance().setMyLocationEnabled(false);
 

@@ -40,8 +40,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class RssItemFragment extends Fragment
-{
+public class RssItemFragment extends Fragment {
 
 	// TODO: Customize parameter argument names
 	private static final String ARG_COLUMN_COUNT = "column-count";
@@ -60,12 +59,10 @@ public class RssItemFragment extends Fragment
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public RssItemFragment()
-	{
+	public RssItemFragment() {
 	}
 
-	private RssItemFragment(OnListFragmentInteractionListener interactionListener, String url)
-	{
+	private RssItemFragment(OnListFragmentInteractionListener interactionListener, String url) {
 		mRssItems = null;
 		mUrlEndpoint = url;
 		mListener = interactionListener;
@@ -74,8 +71,7 @@ public class RssItemFragment extends Fragment
 		refreshDataset();
 	}
 
-	public static RssItemFragment newInstance(OnListFragmentInteractionListener interactionListener, String url)
-	{
+	public static RssItemFragment newInstance(OnListFragmentInteractionListener interactionListener, String url) {
 		RssItemFragment fragment = new RssItemFragment(interactionListener, url);
 
 		Bundle args = new Bundle();
@@ -86,13 +82,11 @@ public class RssItemFragment extends Fragment
 		return fragment;
 	}
 
-	public List<RssItem> getRssItems()
-	{
+	public List<RssItem> getRssItems() {
 		return mRssItems;
 	}
 
-	public void refreshDataset()
-	{
+	public void refreshDataset() {
 		// Only allow one instance to run!
 		if (mXmlLoading)
 			return;
@@ -128,12 +122,10 @@ public class RssItemFragment extends Fragment
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (getArguments() != null)
-		{
+		if (getArguments() != null) {
 			//	mUrlEndpoint = getArguments().getString(ARG_URL_ENDPOINT);
 			mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 		}
@@ -141,13 +133,11 @@ public class RssItemFragment extends Fragment
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState)
-	{
+	                         Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_rss_item_list, container, false);
 
 		// Set the adapter
-		if (view instanceof RecyclerView)
-		{
+		if (view instanceof RecyclerView) {
 			Context context = view.getContext();
 			RecyclerView recyclerView = (RecyclerView) view;
 
@@ -172,8 +162,7 @@ public class RssItemFragment extends Fragment
 
 
 	@Override
-	public void onAttach(Context context)
-	{
+	public void onAttach(Context context) {
 		super.onAttach(context);
 
 //		if (context instanceof OnListFragmentInteractionListener)
@@ -190,8 +179,7 @@ public class RssItemFragment extends Fragment
 	}
 
 	@Override
-	public void onDetach()
-	{
+	public void onDetach() {
 		super.onDetach();
 		mListener = null;
 	}
@@ -206,8 +194,7 @@ public class RssItemFragment extends Fragment
 	 * "http://developer.android.com/training/basics/fragments/communicating.html"
 	 * >Communicating with Other Fragments</a> for more information.
 	 */
-	public interface OnListFragmentInteractionListener
-	{
+	public interface OnListFragmentInteractionListener {
 		// TODO: Update argument type and name
 		void onListFragmentInteraction(RssItem item);
 	}

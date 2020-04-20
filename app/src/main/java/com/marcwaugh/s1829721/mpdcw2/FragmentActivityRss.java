@@ -33,8 +33,7 @@ import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
 import java.util.Date;
 
 public class FragmentActivityRss extends Fragment
-		implements RssItemFragment.OnListFragmentInteractionListener, IApplicationNavbarListener, IApplicationFabListener, IVisibilityChangedListener
-{
+		implements RssItemFragment.OnListFragmentInteractionListener, IApplicationNavbarListener, IApplicationFabListener, IVisibilityChangedListener {
 	private static final String urlTSRoadWorks = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
 	private static final String urlTSRoadWorksPlanned = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
 	private static final String urlTSCurrentIncidents = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
@@ -48,8 +47,7 @@ public class FragmentActivityRss extends Fragment
 	private int targetLoadFragment = -1;
 	private Date lastTransitionDate;
 
-	public FragmentActivityRss(MainActivity.ApplicationMainActivity appMainApp)
-	{
+	FragmentActivityRss(MainActivity.ApplicationMainActivity appMainApp) {
 		this.mainActivity = appMainApp;
 		lastTransitionDate = new Date();
 
@@ -58,34 +56,28 @@ public class FragmentActivityRss extends Fragment
 		fragRssRoadworksPlanned = RssItemFragment.newInstance(this, urlTSRoadWorksPlanned);
 	}
 
-	public RssItemFragment getFragRssRoadworks()
-	{
+	RssItemFragment getFragRssRoadworks() {
 		return fragRssRoadworks;
 	}
 
-	public RssItemFragment getFragRssRoadworksPlanned()
-	{
+	RssItemFragment getFragRssRoadworksPlanned() {
 		return fragRssRoadworksPlanned;
 	}
 
-	public RssItemFragment getFragRssCIncidents()
-	{
+	RssItemFragment getFragRssCIncidents() {
 		return fragRssCIncidents;
 	}
 
 	@Override
-	public void onListFragmentInteraction(RssItem item)
-	{
+	public void onListFragmentInteraction(RssItem item) {
 		// TODO: View on map split with information
 	}
 
 	@Override
-	public void onVisibilityChanged(boolean isVisibleToUser)
-	{
+	public void onVisibilityChanged(boolean isVisibleToUser) {
 		Log.i("FragmentActivityRss", "onVisibilityChanged: " + isVisibleToUser);
 
-		if (isVisibleToUser)
-		{
+		if (isVisibleToUser) {
 			// Set the icon and listener
 			mainActivity.setFabIcon(R.drawable.ic_map_white_64dp);
 			mainActivity.setNavbarListener(this);
@@ -93,15 +85,13 @@ public class FragmentActivityRss extends Fragment
 
 			// Invoke the event to load the correct items
 			MenuItem mi = mainActivity.getNavbarItem();
-			if (mi != null)
-			{
+			if (mi != null) {
 				// Set the loading fragment
 				targetLoadFragment = mi.getItemId();
 				applicationNavbarClicked(mi);
 			}
 		}
-		else
-		{
+		else {
 			// Cleanup
 			mainActivity.setFabListener(null);
 			mainActivity.setNavbarListener(null);
@@ -111,32 +101,27 @@ public class FragmentActivityRss extends Fragment
 	}
 
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-	                         @Nullable Bundle savedInstanceState)
-	{
+	                         @Nullable Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_activity_rss, container, false);
 	}
 
 	@Override
-	public void onStart()
-	{
+	public void onStart() {
 		super.onStart();
 
 		// Setup fragments
 		setupFragments();
 	}
 
-	private void setupFragments()
-	{
+	private void setupFragments() {
 		// Switch to the default view
 		if (targetLoadFragment == -1)
 			switchFragmentTo(R.id.navigation_roadworks);
 		else switchFragmentTo(targetLoadFragment);
 	}
 
-	private void switchFragmentTo(int id)
-	{
-		switch (id)
-		{
+	private void switchFragmentTo(int id) {
+		switch (id) {
 			case R.id.navigation_roadworks:
 				Log.i("RssNavBarItemChanged", "Selected: Roadworks, Id = " + id);
 				mainActivity.setTitle("Roadworks");
@@ -162,21 +147,18 @@ public class FragmentActivityRss extends Fragment
 	}
 
 	@Override
-	public boolean applicationNavbarClicked(MenuItem menuItem)
-	{
+	public boolean applicationNavbarClicked(MenuItem menuItem) {
 		// Switch to the menu item
 		switchFragmentTo(menuItem.getItemId());
 		return true;
 	}
 
 	@Override
-	public void applicationFabClicked()
-	{
+	public void applicationFabClicked() {
 		// Limit the list / map changing to every few second(s), this will stop any potential crashes
 		Date now = new Date();
 		long milliseconds = (now.getTime() - lastTransitionDate.getTime());// / 1000 % 60;
-		if (milliseconds > 1000)
-		{
+		if (milliseconds > 1000) {
 			lastTransitionDate = new Date();
 
 			// Swap to map view

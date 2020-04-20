@@ -29,16 +29,14 @@ import java.util.List;
 
 // Need separate thread to access the internet resource over network
 // Other neater solutions should be adopted in later iterations.
-public class RssXmlPullParser implements Runnable
-{
+public class RssXmlPullParser implements Runnable {
 	private String mUrl;
 	private List<RssItem> mRssItems;
 	private IXmlFinishedEventListener mFinishedEventListener;
 	private IXmlErrorEventListener mXmlErrorEventListener;
 
 	// TODO: Implement IXmlConnectionFailedEventListener
-	public RssXmlPullParser(String websiteUrl, IXmlFinishedEventListener finishedListener, IXmlErrorEventListener errorListener)
-	{
+	public RssXmlPullParser(String websiteUrl, IXmlFinishedEventListener finishedListener, IXmlErrorEventListener errorListener) {
 		mUrl = websiteUrl;
 		mFinishedEventListener = finishedListener;
 		mXmlErrorEventListener = errorListener;
@@ -46,27 +44,23 @@ public class RssXmlPullParser implements Runnable
 		mRssItems = new ArrayList<RssItem>();
 	}
 
-	public List<RssItem> getRssItems()
-	{
+	public List<RssItem> getRssItems() {
 		return mRssItems;
 	}
 
 	@Override
-	public void run()
-	{
+	public void run() {
 		Log.i("XmlParser", "Downloading and Parsing information from " + mUrl);
 		String data = loadWebData();
 		ParseXML(data);
 	}
 
-	private void ParseXML(String inputXml)
-	{
+	private void ParseXML(String inputXml) {
 		// Parse the XML.
 		//
 		XmlPullParser parser = Xml.newPullParser();
 
-		try
-		{
+		try {
 			parser.setInput(new StringReader(inputXml));
 
 			// Temporary storage for the rss items
@@ -74,12 +68,10 @@ public class RssXmlPullParser implements Runnable
 
 			// Loop xml elements
 			int xmlEventType = parser.getEventType();
-			while (xmlEventType != XmlPullParser.END_DOCUMENT)
-			{
+			while (xmlEventType != XmlPullParser.END_DOCUMENT) {
 				String xmlTag = null;
 				xmlTag = parser.getName(); // Get the xml tag name
-				switch (xmlEventType)
-				{
+				switch (xmlEventType) {
 					case XmlPullParser.START_DOCUMENT:
 						//Log.w("XmlParser", "Start Document!");
 						break;
@@ -87,8 +79,7 @@ public class RssXmlPullParser implements Runnable
 					// Start of the xml tag
 					case XmlPullParser.START_TAG:
 						//Log.i("XmlParser", "Start Tag: " + xmlTag);
-						switch (xmlTag.toLowerCase())
-						{
+						switch (xmlTag.toLowerCase()) {
 							case "item":
 								currentItem = new RssItem();
 								break;
@@ -110,16 +101,13 @@ public class RssXmlPullParser implements Runnable
 								break;
 
 							case "point": // ns = georss
-								if (currentItem != null)
-								{
+								if (currentItem != null) {
 									String point = parser.nextText();
 									currentItem.setGeorssPoint(point);
 
-									if (!(point == null || point.isEmpty()))
-									{
+									if (!(point == null || point.isEmpty())) {
 										String[] pointArr = point.split(" ");
-										if (pointArr.length == 2)
-										{
+										if (pointArr.length == 2) {
 											currentItem.setGeorssLat(Double.parseDouble(pointArr[0]));
 											currentItem.setGeorssLng(Double.parseDouble(pointArr[1]));
 											//Log.i("RssParser", "Parsed GeoRSS: Lat("+currentItem.getGeorssLat()+") Lng("+currentItem.getGeorssLng()+")");
@@ -141,8 +129,7 @@ public class RssXmlPullParser implements Runnable
 						xmlTag = parser.getName();
 
 						//
-						if (xmlTag.equalsIgnoreCase("item"))
-						{
+						if (xmlTag.equalsIgnoreCase("item")) {
 							mRssItems.add(currentItem);
 							currentItem = null;
 						}
@@ -153,11 +140,9 @@ public class RssXmlPullParser implements Runnable
 				xmlEventType = parser.next();
 			}
 		}
-		catch (Exception ex)
-		{
+		catch (Exception ex) {
 			// Pass the exception to any handlers
-			if (mXmlErrorEventListener != null)
-			{
+			if (mXmlErrorEventListener != null) {
 				mXmlErrorEventListener.XmlErrorDuringParsing(this, ex);
 
 				// We are not returning any data for error'd parsers so just close the thread.
@@ -171,8 +156,7 @@ public class RssXmlPullParser implements Runnable
 		Log.i("RssParser", "Finished parsing: " + mUrl);
 
 		// Invoke our listener
-		if (this.mFinishedEventListener != null)
-		{
+		if (this.mFinishedEventListener != null) {
 			this.mFinishedEventListener.XmlFinishedParsing(this);
 		}
 	}
@@ -182,16 +166,14 @@ public class RssXmlPullParser implements Runnable
 	 *
 	 * @return Url data
 	 */
-	private String loadWebData()
-	{
+	private String loadWebData() {
 		String data = "";
 		URL url;
 		URLConnection urlConnection;
 		BufferedReader bufferedReader = null;
 		String line = "";
 
-		try
-		{
+		try {
 			url = new URL(this.mUrl);
 			urlConnection = url.openConnection();
 			bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -203,8 +185,7 @@ public class RssXmlPullParser implements Runnable
 			bufferedReader.close();
 			return data;
 		}
-		catch (IOException ex)
-		{
+		catch (IOException ex) {
 			Log.e("Failed to load website", "IOException: " + ex.getMessage());
 			return null;
 		}

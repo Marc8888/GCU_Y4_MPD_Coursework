@@ -13,7 +13,6 @@
 
 package com.marcwaugh.s1829721.mpdcw2.listenerinterfaces;
 
-public interface IApplicationPermissionResultListener
-{
+public interface IApplicationPermissionResultListener {
 	void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults);
 }

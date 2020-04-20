@@ -49,8 +49,7 @@ import java.util.Date;
 import java.util.List;
 
 public class FragmentActivityMap extends Fragment
-		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener, IFragmentLocationWantingMap
-{
+		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener, IFragmentLocationWantingMap {
 	private Date lastTransitionDate;
 	private boolean mapReady = false;
 	private GoogleMap mMap;
@@ -63,8 +62,7 @@ public class FragmentActivityMap extends Fragment
 	@DrawableRes
 	private int rssItemIcon = 0;
 
-	public FragmentActivityMap(MainActivity.ApplicationMainActivity appMainApp)
-	{
+	FragmentActivityMap(MainActivity.ApplicationMainActivity appMainApp) {
 		this.mainActivity = appMainApp;
 		this.locationHandler = new GoogleMapsLocationHandler(this);
 		this.lastTransitionDate = new Date();
@@ -72,8 +70,7 @@ public class FragmentActivityMap extends Fragment
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
 	                         @Nullable ViewGroup container,
-	                         @Nullable Bundle savedInstanceState)
-	{
+	                         @Nullable Bundle savedInstanceState) {
 		View fragmentView = inflater.inflate(R.layout.fragment_activity_map, container, false);
 
 		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.frag_map_gmap);
@@ -85,12 +82,10 @@ public class FragmentActivityMap extends Fragment
 	}
 
 	@Override
-	public void onVisibilityChanged(boolean isVisibleToUser)
-	{
+	public void onVisibilityChanged(boolean isVisibleToUser) {
 		Log.i("FragmentActivityRss", "setUserVisibleHint: " + isVisibleToUser);
 
-		if (isVisibleToUser)
-		{
+		if (isVisibleToUser) {
 			mainActivity.setFabIcon(R.drawable.ic_format_list_bulleted_white_64dp);
 			mainActivity.setFabListener(this);
 			mainActivity.setNavbarListener(this);
@@ -99,8 +94,7 @@ public class FragmentActivityMap extends Fragment
 			MenuItem mi = mainActivity.getNavbarItem();
 			if (mi != null) applicationNavbarClicked(mi);
 		}
-		else
-		{
+		else {
 			// Cleanup
 			mainActivity.setFabListener(null);
 			mainActivity.setNavbarListener(null);
@@ -122,8 +116,7 @@ public class FragmentActivityMap extends Fragment
 	 * installed Google Play services and returned to the app.
 	 */
 	@Override
-	public void onMapReady(GoogleMap googleMap)
-	{
+	public void onMapReady(GoogleMap googleMap) {
 		mMap = googleMap;
 		mMap.clear();
 
@@ -146,13 +139,11 @@ public class FragmentActivityMap extends Fragment
 	}
 
 	@Override
-	public void applicationFabClicked()
-	{
+	public void applicationFabClicked() {
 		// Limit the list / map changing to every few second(s), this will stop any potential crashes
 		Date now = new Date();
 		long milliseconds = (now.getTime() - lastTransitionDate.getTime());// / 1000 % 60;
-		if (milliseconds > 1000)
-		{
+		if (milliseconds > 1000) {
 			lastTransitionDate = new Date();
 
 			// Swap to the list view
@@ -161,12 +152,10 @@ public class FragmentActivityMap extends Fragment
 	}
 
 	@Override
-	public boolean applicationNavbarClicked(MenuItem menuItem)
-	{
+	public boolean applicationNavbarClicked(MenuItem menuItem) {
 		int id = menuItem.getItemId();
 
-		switch (id)
-		{
+		switch (id) {
 			case R.id.navigation_roadworks:
 				Log.i("RssNavBarItemChanged", "Selected: Roadworks, Id = " + id);
 				mainActivity.setTitle("Roadworks");
@@ -201,8 +190,7 @@ public class FragmentActivityMap extends Fragment
 	}
 
 	@Override
-	public void onStart()
-	{
+	public void onStart() {
 		super.onStart();
 
 		// If the map has already loaded load new markers
@@ -210,21 +198,20 @@ public class FragmentActivityMap extends Fragment
 			loadMarkersFromRss(rssItemFragment, rssItemIcon);
 	}
 
-	private void loadMarkersFromRss(RssItemFragment rssItems, @DrawableRes int drawableResourceId)
-	{
+	private void loadMarkersFromRss(RssItemFragment rssItems, @DrawableRes int drawableResourceId) {
 		if (rssItems == null || drawableResourceId == -1 || drawableResourceId == 0)
 			//throw new RuntimeException("FragmentActivityMap: RssItems or Drawable id is null!");
 			return;
 
 		// Get the items
 		List<RssItem> listRssItems = rssItems.getRssItems();
+		if (listRssItems == null) return;
 
 		// Clear markers from cluster
 		mClusterManager.clearItems();
 
 		// Check if we have no items, if none then just return
-		if (listRssItems.size() == 0)
-		{
+		if (listRssItems.size() == 0) {
 			mClusterManager.cluster();
 			return;
 		}
@@ -235,8 +222,7 @@ public class FragmentActivityMap extends Fragment
 		// Display markers
 		BitmapDescriptor bdf = GmapClusterItemRenderer.BitmapDescriptorFromVector(getContext(), drawableResourceId);
 
-		for (RssItem rss : listRssItems)
-		{
+		for (RssItem rss : listRssItems) {
 			LatLng location = new LatLng(rss.getGeorssLat(), rss.getGeorssLng());
 			GmapClusterItem clusterItem = new GmapClusterItem(
 					location,
@@ -264,14 +250,12 @@ public class FragmentActivityMap extends Fragment
 	}
 
 	@Override
-	public GoogleMap getGMapInstance()
-	{
+	public GoogleMap getGMapInstance() {
 		return mMap;
 	}
 
 	@Override
-	public MainActivity.ApplicationMainActivity getApplication()
-	{
+	public MainActivity.ApplicationMainActivity getApplication() {
 		return mainActivity;
 	}
 }

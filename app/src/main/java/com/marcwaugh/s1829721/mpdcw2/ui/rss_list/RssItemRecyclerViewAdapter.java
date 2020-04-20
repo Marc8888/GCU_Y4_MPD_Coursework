@@ -31,42 +31,36 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecyclerViewAdapter.ViewHolder>
-{
+public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecyclerViewAdapter.ViewHolder> {
 
 	private final OnListFragmentInteractionListener mListener;
 	private List<RssItem> mRssItesm;
 
-	public RssItemRecyclerViewAdapter(List<RssItem> items, OnListFragmentInteractionListener listener)
-	{
+	public RssItemRecyclerViewAdapter(List<RssItem> items, OnListFragmentInteractionListener listener) {
 		mRssItesm = items;
 		mListener = listener;
 	}
 
-	public void setRssItemsList(List<RssItem> rssItems, Boolean notifyChanged)
-	{
+	public void setRssItemsList(List<RssItem> rssItems, Boolean notifyChanged) {
 		mRssItesm = rssItems;
 
 		if (notifyChanged)
 			notifyDataSetChanged();
 	}
 
-	public void setRssItemsList(List<RssItem> rssItems)
-	{
+	public void setRssItemsList(List<RssItem> rssItems) {
 		setRssItemsList(rssItems, true);
 	}
 
 	@Override
-	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-	{
+	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(parent.getContext())
 				.inflate(R.layout.fragment_rss_item, parent, false);
 		return new ViewHolder(view);
 	}
 
 	@Override
-	public void onBindViewHolder(final ViewHolder holder, int position)
-	{
+	public void onBindViewHolder(final ViewHolder holder, int position) {
 		holder.mItem = mRssItesm.get(position);
 		holder.mTxtTitle.setText(mRssItesm.get(position).getTitle());
 		holder.mTxtDescription.setText(
@@ -74,8 +68,7 @@ public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecy
 
 		holder.mView.setOnClickListener((view) ->
 		{
-			if (null != mListener)
-			{
+			if (null != mListener) {
 				// Notify the active callbacks interface (the activity, if the
 				// fragment is attached to one) that an item has been selected.
 				mListener.onListFragmentInteraction(holder.mItem);
@@ -84,20 +77,17 @@ public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecy
 	}
 
 	@Override
-	public int getItemCount()
-	{
+	public int getItemCount() {
 		return mRssItesm.size();
 	}
 
-	public class ViewHolder extends RecyclerView.ViewHolder
-	{
+	public class ViewHolder extends RecyclerView.ViewHolder {
 		public final View mView;
 		public final TextView mTxtTitle;
 		public final TextView mTxtDescription;
 		public RssItem mItem;
 
-		public ViewHolder(View view)
-		{
+		public ViewHolder(View view) {
 			super(view);
 			mView = view;
 			mTxtTitle = (TextView) view.findViewById(R.id.txtTitle);
@@ -105,8 +95,7 @@ public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecy
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return super.toString() + " '" + mTxtTitle.getText() + "'";
 		}
 	}

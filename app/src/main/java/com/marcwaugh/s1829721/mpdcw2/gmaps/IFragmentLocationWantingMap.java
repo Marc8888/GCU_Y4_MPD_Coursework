@@ -18,8 +18,7 @@ import android.content.Context;
 import com.google.android.gms.maps.GoogleMap;
 import com.marcwaugh.s1829721.mpdcw2.MainActivity;
 
-public interface IFragmentLocationWantingMap
-{
+public interface IFragmentLocationWantingMap {
 	Context getContext();
 
 	GoogleMap getGMapInstance();

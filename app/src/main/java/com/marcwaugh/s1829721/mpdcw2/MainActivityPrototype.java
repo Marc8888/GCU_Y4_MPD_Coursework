@@ -40,8 +40,7 @@ import java.util.List;
 
 public class MainActivityPrototype
 		extends AppCompatActivity
-		implements View.OnClickListener, IXmlFinishedEventListener, IXmlErrorEventListener
-{
+		implements View.OnClickListener, IXmlFinishedEventListener, IXmlErrorEventListener {
 	// Traffic Scotland URLs
 	private static final String urlTSRoadWorks = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
 	private static final String urlTSRoadWorksPlanned = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
@@ -51,8 +50,7 @@ public class MainActivityPrototype
 	private Button startButton;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_prototype);
 
@@ -61,28 +59,23 @@ public class MainActivityPrototype
 		startButton.setOnClickListener(this);
 	}
 
-	public void onClick(View view)
-	{
+	public void onClick(View view) {
 		startProgress();
 	}
 
-	public void startProgress()
-	{
+	public void startProgress() {
 		// Autoload the roadworks
 		new Thread(new RssXmlPullParser(urlTSRoadWorks, this, this)).start();
 	} //
 
 	@Override
-	public void XmlFinishedParsing(final RssXmlPullParser parser)
-	{
+	public void XmlFinishedParsing(final RssXmlPullParser parser) {
 		// Get a handler that can be used to post to the main thread
 		Handler mainHandler = new Handler(Looper.getMainLooper());
 
-		Runnable myRunnable = new Runnable()
-		{
+		Runnable myRunnable = new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				List<RssItem> items = parser.getRssItems();
 
 				// Update recylcer
@@ -95,8 +88,7 @@ public class MainActivityPrototype
 	}
 
 	@Override
-	public void XmlErrorDuringParsing(RssXmlPullParser parser, Exception ex)
-	{
+	public void XmlErrorDuringParsing(RssXmlPullParser parser, Exception ex) {
 
 	}
 } // End of MainActivity
