@@ -37,7 +37,7 @@ public class FragmentCredits extends Fragment
 		implements IVisibilityChangedListener, IApplicationFabListener {
 
 	private final MainActivity.ApplicationMainActivity mApp;
-	private TextView mTextViewCredits;
+	private TextView mText;
 	private Date lastTransitionDate;
 
 	FragmentCredits(MainActivity.ApplicationMainActivity application) {
@@ -48,11 +48,12 @@ public class FragmentCredits extends Fragment
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
 	                         @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_credits, container, false);
-		mTextViewCredits = view.findViewById(R.id.textViewCredits);
+		mText = view.findViewById(R.id.textViewCredits);
 
-		mTextViewCredits.setHorizontallyScrolling(true);
-		mTextViewCredits.setTextSize(14);
-		mTextViewCredits.setTypeface(Typeface.MONOSPACE);    //all characters the same width
+		// Disable user input (READ ONLY)
+		//mText.setInputType(InputType.TYPE_NULL);
+		mText.setTextSize(14);
+		mText.setTypeface(Typeface.MONOSPACE);
 
 		return view;
 	}
@@ -70,13 +71,15 @@ public class FragmentCredits extends Fragment
 
 			// Throw away the first 2 header lines before parsing
 			while ((line = bufferedReader.readLine()) != null)
-				credits.append(line);
+				credits.append(line).append("\n");
 
 			bufferedReader.close();
-			mTextViewCredits.setText(credits.toString());
+
+			String text = credits.toString();
+			mText.setText(text);
 		}
 		catch (IOException e) {
-			mTextViewCredits.setText("Failed to open credits file...\n"
+			mText.setText("Failed to open credits file...\n"
 					+ e.toString());
 		}
 	}
@@ -87,6 +90,7 @@ public class FragmentCredits extends Fragment
 			mApp.setFabListener(this);
 			mApp.setNavbarVisibility(false); // Hide the navbar
 			mApp.setFabIcon(R.drawable.ic_format_list_bulleted_white_64dp);
+			mApp.setTitle("Credits");
 		}
 		else {
 			mApp.setFabListener(null);
