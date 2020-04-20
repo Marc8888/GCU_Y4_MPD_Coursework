@@ -113,16 +113,13 @@
     <!--  android:layout_height="0px"-->
 
 
-    <fragment
+    <FrameLayout
         android:id="@+id/frag_mainactivity"
-        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
 
         android:layout_height="0px"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-
-        app:defaultNavHost="true"
 
         app:layout_constraintTop_toBottomOf="@id/tb_mainactivity"
         app:layout_constraintHorizontal_bias="0.0"

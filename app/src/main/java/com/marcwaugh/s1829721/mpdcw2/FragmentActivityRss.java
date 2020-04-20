@@ -13,6 +13,7 @@
 
 package com.marcwaugh.s1829721.mpdcw2;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,18 +43,39 @@ public class FragmentActivityRss extends Fragment
 	private RssItemFragment fragRssRoadworks = null;
 	private RssItemFragment fragRssRoadworksPlanned = null;
 	private RssItemFragment fragRssCIncidents = null;
-	private MainActivity.ApplicationMainActivity mainActivity;
+	private MainActivity.MainActivityHelper mainActivity;
 	private boolean isVisible = false;
 	private int targetLoadFragment = -1;
 	private Date lastTransitionDate;
 
-	FragmentActivityRss(MainActivity.ApplicationMainActivity appMainApp) {
+	public FragmentActivityRss() {
+		this.lastTransitionDate = new Date();
+
+		Log.i("FragmentActivityRss", "Constructor");
+	}
+
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+		if (context instanceof MainActivity) {
+			MainActivity activity = (MainActivity) context;
+
+			initializeController(activity.getMainActivityHelper());
+			Log.i("FragmentActivityRss", "onAttach -> MainActivity");
+			onVisibilityChanged(true);
+		}
+	}
+
+	private void initializeController(MainActivity.MainActivityHelper appMainApp) {
 		this.mainActivity = appMainApp;
 		lastTransitionDate = new Date();
 
-		fragRssRoadworks = RssItemFragment.newInstance(this, urlTSRoadWorks);
-		fragRssCIncidents = RssItemFragment.newInstance(this, urlTSCurrentIncidents);
-		fragRssRoadworksPlanned = RssItemFragment.newInstance(this, urlTSRoadWorksPlanned);
+		if (fragRssRoadworks == null)
+			fragRssRoadworks = RssItemFragment.newInstance(urlTSRoadWorks).setListener(this);
+		if (fragRssCIncidents == null)
+			fragRssCIncidents = RssItemFragment.newInstance(urlTSCurrentIncidents).setListener(this);
+		if (fragRssRoadworksPlanned == null)
+			fragRssRoadworksPlanned = RssItemFragment.newInstance(urlTSRoadWorksPlanned).setListener(this);
 	}
 
 	RssItemFragment getFragRssRoadworks() {
@@ -75,6 +97,7 @@ public class FragmentActivityRss extends Fragment
 
 	@Override
 	public void onVisibilityChanged(boolean isVisibleToUser) {
+		if (mainActivity == null) return;
 		Log.i("FragmentActivityRss", "onVisibilityChanged: " + isVisibleToUser);
 
 		if (isVisibleToUser) {

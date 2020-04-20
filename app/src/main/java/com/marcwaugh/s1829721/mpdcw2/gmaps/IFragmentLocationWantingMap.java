@@ -23,5 +23,5 @@ public interface IFragmentLocationWantingMap {
 
 	GoogleMap getGMapInstance();
 
-	MainActivity.ApplicationMainActivity getApplication();
+	MainActivity.MainActivityHelper getApplication();
 }

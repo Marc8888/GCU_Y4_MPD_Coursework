@@ -44,10 +44,14 @@ public class MainActivity extends AppCompatActivity {
 	private FragmentActivityMap fragGMap;
 	private FragmentCredits fragCredits;
 
-	private ApplicationMainActivity appMainApp = null;
+	private MainActivityHelper appMainApp = null;
 
 	public MainActivity() {
-		appMainApp = new ApplicationMainActivity(this);
+		appMainApp = new MainActivityHelper(this);
+	}
+
+	public MainActivityHelper getMainActivityHelper() {
+		return appMainApp;
 	}
 
 	// Menu icons are inflated just as they were with actionbar
@@ -79,20 +83,16 @@ public class MainActivity extends AppCompatActivity {
 		BottomNavigationView navView = findViewById(R.id.nav_view_mainactivity);
 
 		// Pass along the navbar event to the appropriate listener
-		navView.setOnNavigationItemSelectedListener((@NonNull MenuItem item) ->
-		{
+		navView.setOnNavigationItemSelectedListener((@NonNull MenuItem item) -> {
 			Log.i("NavBarItemChanged", "Selected: " + item.getItemId());
 			return appMainApp.invokeNavbarListener(item);
 		});
-
-
 	}
 
 	private void setupFab() {
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_ma_MapToggle);
 
-		fab.setOnClickListener((v) ->
-		{
+		fab.setOnClickListener((v) -> {
 			appMainApp.invokeFabListener();
 //			boolean isGone = findViewById(R.id.nav_view_mainactivity).getVisibility() == View.GONE;
 //			appMainApp.setNavbarVisibility(isGone);
@@ -103,9 +103,12 @@ public class MainActivity extends AppCompatActivity {
 
 	private void setupFragments() {
 		// Setup fragments
-		fragRssItems = new FragmentActivityRss(appMainApp);
-		fragGMap = new FragmentActivityMap(appMainApp);
-		fragCredits = new FragmentCredits(appMainApp);
+		if (fragRssItems == null)
+			fragRssItems = new FragmentActivityRss();
+		if (fragGMap == null)
+			fragGMap = new FragmentActivityMap();
+		if (fragCredits == null)
+			fragCredits = new FragmentCredits();
 
 		// Setup the map
 		setupFab();
@@ -127,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	@Override
-	public void onRequestPermissionsResult(int requestCode,
-	                                       String permissions[], int[] grantResults) {
+	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 		this.appMainApp.invokePermissionListeners(requestCode, permissions, grantResults);
 	}
 
@@ -179,13 +181,13 @@ public class MainActivity extends AppCompatActivity {
 			((IVisibilityChangedListener) newFragment).onVisibilityChanged(true);
 	}
 
-	public static class ApplicationMainActivity {
+	public static class MainActivityHelper {
 		private MainActivity app;
 		private IApplicationNavbarListener navbarListener = null;
 		private IApplicationFabListener fabListener = null;
 		private List<IApplicationPermissionResultListener> permissionListeners = null;
 
-		ApplicationMainActivity(MainActivity app) {
+		MainActivityHelper(MainActivity app) {
 			this.app = app;
 
 			permissionListeners = new ArrayList<IApplicationPermissionResultListener>();

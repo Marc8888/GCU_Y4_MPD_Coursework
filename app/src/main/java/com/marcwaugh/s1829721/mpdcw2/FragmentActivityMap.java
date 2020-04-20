@@ -13,6 +13,7 @@
 
 package com.marcwaugh.s1829721.mpdcw2;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,16 +57,32 @@ public class FragmentActivityMap extends Fragment
 	private GoogleMapsLocationHandler locationHandler;
 	private ClusterManager<GmapClusterItem> mClusterManager;
 
-	private MainActivity.ApplicationMainActivity mainActivity;
+	private MainActivity.MainActivityHelper mainActivity;
 	private RssItemFragment rssItemFragment = null;
 
 	@DrawableRes
 	private int rssItemIcon = 0;
 
-	FragmentActivityMap(MainActivity.ApplicationMainActivity appMainApp) {
-		this.mainActivity = appMainApp;
-		this.locationHandler = new GoogleMapsLocationHandler(this);
+	public FragmentActivityMap() {
 		this.lastTransitionDate = new Date();
+		Log.i("FragmentActivityMap", "Constructor");
+	}
+
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+		if (context instanceof MainActivity) {
+			MainActivity activity = (MainActivity) context;
+
+			initializeController(activity.getMainActivityHelper());
+			Log.i("FragmentActivityRss", "onAttach -> MainActivity");
+			onVisibilityChanged(true);
+		}
+	}
+
+	private void initializeController(MainActivity.MainActivityHelper helper) {
+		this.mainActivity = helper;
+		this.locationHandler = new GoogleMapsLocationHandler(this);
 	}
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
@@ -83,6 +100,7 @@ public class FragmentActivityMap extends Fragment
 
 	@Override
 	public void onVisibilityChanged(boolean isVisibleToUser) {
+		if (mainActivity == null) return;
 		Log.i("FragmentActivityRss", "setUserVisibleHint: " + isVisibleToUser);
 
 		if (isVisibleToUser) {
@@ -255,7 +273,7 @@ public class FragmentActivityMap extends Fragment
 	}
 
 	@Override
-	public MainActivity.ApplicationMainActivity getApplication() {
+	public MainActivity.MainActivityHelper getApplication() {
 		return mainActivity;
 	}
 }

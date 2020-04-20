@@ -35,7 +35,6 @@ public class RssXmlPullParser implements Runnable {
 	private IXmlFinishedEventListener mFinishedEventListener;
 	private IXmlErrorEventListener mXmlErrorEventListener;
 
-	// TODO: Implement IXmlConnectionFailedEventListener
 	public RssXmlPullParser(String websiteUrl, IXmlFinishedEventListener finishedListener, IXmlErrorEventListener errorListener) {
 		mUrl = websiteUrl;
 		mFinishedEventListener = finishedListener;
@@ -186,7 +185,7 @@ public class RssXmlPullParser implements Runnable {
 			return data;
 		}
 		catch (IOException ex) {
-			Log.e("Failed to load website", "IOException: " + ex.getMessage());
+			Log.e("Failed to load website", "Url = " + mUrl + "\nIOException: " + ex.getMessage());
 			return null;
 		}
 	}

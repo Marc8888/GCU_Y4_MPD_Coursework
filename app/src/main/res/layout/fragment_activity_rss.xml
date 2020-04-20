@@ -19,16 +19,15 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite">
 
-    <fragment
+    <FrameLayout
         android:id="@+id/frag_rss_nav_host"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:name="com.marcwaugh.s1829721.mpdcw2.EmptyFragment"
         android:layout_width="match_parent"
 
         android:layout_height="0px"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
 
-        app:defaultNavHost="true"
         app:elevation="0dp"
 
         app:layout_constraintBottom_toBottomOf="parent"

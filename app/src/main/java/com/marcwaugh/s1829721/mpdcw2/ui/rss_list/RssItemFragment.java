@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.marcwaugh.s1829721.mpdcw2.MainActivity;
 import com.marcwaugh.s1829721.mpdcw2.R;
 import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
 import com.marcwaugh.s1829721.mpdcw2.xml.RssXmlPullParser;
@@ -48,7 +49,7 @@ public class RssItemFragment extends Fragment {
 
 	// TODO: Customize parameters
 	private int mColumnCount = 1;
-	private String mUrlEndpoint = "";
+	private String mUrlEndpoint = null;
 	private OnListFragmentInteractionListener mListener;
 	private RssItemRecyclerViewAdapter rva;
 
@@ -60,22 +61,18 @@ public class RssItemFragment extends Fragment {
 	 * fragment (e.g. upon screen orientation changes).
 	 */
 	public RssItemFragment() {
+		Log.i("FragmentActivityMap", "Constructor");
 	}
 
-	private RssItemFragment(OnListFragmentInteractionListener interactionListener, String url) {
-		mRssItems = null;
-		mUrlEndpoint = url;
-		mListener = interactionListener;
-
-		// Reload dataset
-		refreshDataset();
+	public static RssItemFragment newInstance(String url) {
+		return newInstance(url, 1);
 	}
 
-	public static RssItemFragment newInstance(OnListFragmentInteractionListener interactionListener, String url) {
-		RssItemFragment fragment = new RssItemFragment(interactionListener, url);
+	public static RssItemFragment newInstance(String url, int columnCount) {
+		RssItemFragment fragment = new RssItemFragment();
 
 		Bundle args = new Bundle();
-		args.putInt(ARG_COLUMN_COUNT, 1);
+		args.putInt(ARG_COLUMN_COUNT, columnCount);
 		args.putString(ARG_URL_ENDPOINT, url);
 
 		fragment.setArguments(args);
@@ -88,7 +85,7 @@ public class RssItemFragment extends Fragment {
 
 	public void refreshDataset() {
 		// Only allow one instance to run!
-		if (mXmlLoading)
+		if (mXmlLoading || mUrlEndpoint == null)
 			return;
 
 		mXmlLoading = true;
@@ -96,24 +93,19 @@ public class RssItemFragment extends Fragment {
 		// Reload dataset
 		new Thread(new RssXmlPullParser(mUrlEndpoint,
 				// Success, parse and display data
-				(rssParser) ->
-				{
-					new Handler(Looper.getMainLooper()).post(() ->
-					{
-						// Update the rss items
-						Log.d("RssItemFragment", "Setting Rss Items");
-						if (rva != null)
-							rva.setRssItemsList(rssParser.getRssItems());
+				(rssParser) -> new Handler(Looper.getMainLooper()).post(() -> {
+					// Update the rss items
+					Log.d("RssItemFragment", "Setting Rss Items");
 
-						mRssItems = rssParser.getRssItems();
+					if (rva != null)
+						rva.setRssItemsList(rssParser.getRssItems());
 
-						mXmlLoading = false;
-					});
-				},
+					mRssItems = rssParser.getRssItems();
+					mXmlLoading = false;
+				}),
 
 				// Exception handling
-				(rssParser, exception) ->
-				{
+				(rssParser, exception) -> {
 					// Handle any exceptions during rss processing
 					Log.e("RssFragment", "Failed to parse xml document (" + mUrlEndpoint + ").", exception);
 					mXmlLoading = false;
@@ -126,7 +118,7 @@ public class RssItemFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 
 		if (getArguments() != null) {
-			//	mUrlEndpoint = getArguments().getString(ARG_URL_ENDPOINT);
+			mUrlEndpoint = getArguments().getString(ARG_URL_ENDPOINT);
 			mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 		}
 	}
@@ -160,22 +152,35 @@ public class RssItemFragment extends Fragment {
 		return view;
 	}
 
+	public RssItemFragment setListener(OnListFragmentInteractionListener listener) {
+		boolean wasNull = mListener == null;
+		this.mListener = listener;
+
+		// Setup the adapter if after onCreateView
+		if (wasNull && listener != null && getView() != null && rva != null) {
+			rva.setListener(listener);
+		}
+
+		return this;
+	}
+
 
 	@Override
 	public void onAttach(Context context) {
 		super.onAttach(context);
 
-//		if (context instanceof OnListFragmentInteractionListener)
-//			mListener = (OnListFragmentInteractionListener) context;
+		if (context instanceof OnListFragmentInteractionListener)
+			mListener = (OnListFragmentInteractionListener) context;
+		else if (context instanceof MainActivity && (((MainActivity) context).getMainActivityHelper().getFragmentRss() != null))
+			mListener = ((MainActivity) context).getMainActivityHelper().getFragmentRss();
 //		else
 //			throw new RuntimeException(context.toString()
 //					+ " must implement OnListFragmentInteractionListener");
 
-		if (mListener == null)
-			throw new RuntimeException("OnListFragmentInteractionListener mListener must not be null!");
-
-		// TODO Reload list here.
-		// TODO log information here
+		if (mListener != null && mUrlEndpoint != null) {
+			// Reload dataset
+			refreshDataset();
+		}
 	}
 
 	@Override

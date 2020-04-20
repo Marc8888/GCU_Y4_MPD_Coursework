@@ -32,8 +32,7 @@ import java.util.List;
  * TODO: Replace the implementation with code for your data type.
  */
 public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecyclerViewAdapter.ViewHolder> {
-
-	private final OnListFragmentInteractionListener mListener;
+	private OnListFragmentInteractionListener mListener;
 	private List<RssItem> mRssItesm;
 
 	public RssItemRecyclerViewAdapter(List<RssItem> items, OnListFragmentInteractionListener listener) {
@@ -66,9 +65,8 @@ public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecy
 		holder.mTxtDescription.setText(
 				mRssItesm.get(position).getDescription_Cleaned());
 
-		holder.mView.setOnClickListener((view) ->
-		{
-			if (null != mListener) {
+		holder.mView.setOnClickListener((view) -> {
+			if (mListener != null) {
 				// Notify the active callbacks interface (the activity, if the
 				// fragment is attached to one) that an item has been selected.
 				mListener.onListFragmentInteraction(holder.mItem);
@@ -79,6 +77,10 @@ public class RssItemRecyclerViewAdapter extends RecyclerView.Adapter<RssItemRecy
 	@Override
 	public int getItemCount() {
 		return mRssItesm.size();
+	}
+
+	public void setListener(OnListFragmentInteractionListener listener) {
+		this.mListener = listener;
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {

@@ -14,8 +14,10 @@
 package com.marcwaugh.s1829721.mpdcw2;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +38,29 @@ import java.util.Date;
 public class FragmentCredits extends Fragment
 		implements IVisibilityChangedListener, IApplicationFabListener {
 
-	private final MainActivity.ApplicationMainActivity mApp;
+	private MainActivity.MainActivityHelper mainActivity;
 	private TextView mText;
 	private Date lastTransitionDate;
 
-	FragmentCredits(MainActivity.ApplicationMainActivity application) {
-		this.mApp = application;
+	public FragmentCredits() {
 		this.lastTransitionDate = new Date();
+	}
+
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+		if (context instanceof MainActivity) {
+			MainActivity activity = (MainActivity) context;
+
+			initializeController(activity.getMainActivityHelper());
+			Log.i("FragmentActivityRss", "onAttach -> MainActivity");
+			onVisibilityChanged(true);
+		}
+	}
+
+	private void initializeController(MainActivity.MainActivityHelper helper) {
+		this.mainActivity = helper;
+		lastTransitionDate = new Date();
 	}
 
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -67,7 +85,7 @@ public class FragmentCredits extends Fragment
 			String line = "";
 			StringBuilder credits = new StringBuilder();
 			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(mApp.getMainActivity().getAssets().open("Credits.txt")));
+					new InputStreamReader(mainActivity.getMainActivity().getAssets().open("Credits.txt")));
 
 			// Throw away the first 2 header lines before parsing
 			while ((line = bufferedReader.readLine()) != null)
@@ -86,15 +104,18 @@ public class FragmentCredits extends Fragment
 
 	@Override
 	public void onVisibilityChanged(boolean isVisibleToUser) {
+		if (mainActivity == null)
+			return;
+
 		if (isVisibleToUser) {
-			mApp.setFabListener(this);
-			mApp.setNavbarVisibility(false); // Hide the navbar
-			mApp.setFabIcon(R.drawable.ic_format_list_bulleted_white_64dp);
-			mApp.setTitle("Credits");
+			mainActivity.setFabListener(this);
+			mainActivity.setNavbarVisibility(false); // Hide the navbar
+			mainActivity.setFabIcon(R.drawable.ic_format_list_bulleted_white_64dp);
+			mainActivity.setTitle("Credits");
 		}
 		else {
-			mApp.setFabListener(null);
-			mApp.setNavbarVisibility(true); // Show the navbar
+			mainActivity.setFabListener(null);
+			mainActivity.setNavbarVisibility(true); // Show the navbar
 		}
 	}
 
@@ -107,7 +128,7 @@ public class FragmentCredits extends Fragment
 			lastTransitionDate = new Date();
 
 			// Swap to the list view
-			mApp.transitionFragment(mApp.getFragmentRss());
+			mainActivity.transitionFragment(mainActivity.getFragmentRss());
 		}
 	}
 }
