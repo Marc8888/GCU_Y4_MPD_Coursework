@@ -13,11 +13,6 @@
 
 package com.marcwaugh.s1829721.mpdcw2.xml;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 public class RssItem
 {
 	//<title>M90 J1 to J3</title>
@@ -110,27 +105,41 @@ public class RssItem
 		this.georssLng = georssLng;
 	}
 
+	/**
+	 * Set the description and create a cleaned version
+	 *
+	 * @param description
+	 */
 	public void setDescription(String description)
 	{
+		// Set the description
 		this.description = description;
 		if (description == null) return;
 
-
 		// Clean and format the description
 		String descFixed = description
-				.trim()
+				.trim() // Remove any trailing whitespace
+
+				// Replace <br> with a new line character
 				.replace("<br />", "\n")
 				.replace("<br>", "\n")
 				.replace("<br/>", "\n");
 
-		String[] lines = descFixed.split("\n");
+		String[] arrLines = descFixed.split("\n");
 		StringBuilder descriptionOutput = new StringBuilder();
 
-		SimpleDateFormat dateOutput = new SimpleDateFormat("dd MMMMM yyyy", Locale.UK);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy", Locale.UK);
+		// Date formats used by rss (without the day), they are no longer needed but
+		//   was kept in the case that i wanted to add back in that functionality
+		// SimpleDateFormat dateOutput = new SimpleDateFormat("dd MMMMM yyyy", Locale.UK);
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy", Locale.UK);
 
-		for (String line : lines)
+		// Do various text changes to make the description text look more user friendly.
+		//
+		for (String txtLine : arrLines)
 		{
+			String line = txtLine.trim();
+
+			// Replace the minutes from the date
 			if (line.startsWith("Start Date: ")
 					|| line.startsWith("End Date: "))
 			{
@@ -140,18 +149,42 @@ public class RssItem
 						.replace("End Date: ", "")
 						.split(" -")[0]  // Remove " - 00:00"
 						.split(", ")[1]; // Remove "Monday, "
-				try
+
+				// Append to the output
+				descriptionOutput.append(type).append(": ").append(text).append("\n");
+
+//				try
+//				{
+//					Date d = dateFormat.parse(text);
+//				}
+//				catch (ParseException e)
+//				{
+//					e.printStackTrace();
+//				}
+				continue;
+			}
+
+			// Replace "Works:" with "Works: "
+			if (line.contains("Works:"))
+				line = line.replace("Works:", "Works: ");
+
+			// Fix cases where "Traffic Management:" is not on its own line
+			if (line.contains("Traffic Management:") && !line.startsWith("Traffic Management"))
+			{
+				// This is a quick and dirty solution, its very jank but gets the job done
+
+				// We are fixing up the text formatting by splitting it into new lines.
+				line = line.replace("Traffic Management:", "/TM//TRAFFIC/");
+
+				// Split by our line identifier $TM
+				String[] tm = line.split("/TM/");
+				for (String x : tm)
 				{
-					Date d = dateFormat.parse(text);
-					descriptionOutput
-							.append(type)
-							.append(": ")
-							.append(text)
-							.append("\n");
-				}
-				catch (ParseException e)
-				{
-					e.printStackTrace();
+					// Replace our variable /TRAFFIC/ with the traffic management text
+					x = x.replace("/TRAFFIC/", "Traffic Management: ");
+
+					// Add each line to the output with a new line character
+					descriptionOutput.append(x).append("\n");
 				}
 
 				continue;
