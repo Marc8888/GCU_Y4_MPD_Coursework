@@ -18,7 +18,7 @@
     <string name="title_planned_roadworks">Planned Rw\'s</string>
     <string name="title_current_incidents">Current Incidents</string>
 
-    <string name="title_activity_main_nav">MainActivityNav</string>
+    <string name="title_activity_main">MainActivity</string>
     <string name="toolbar_credits">Credits</string>
 
     <string name="student_id">S1829721</string>
