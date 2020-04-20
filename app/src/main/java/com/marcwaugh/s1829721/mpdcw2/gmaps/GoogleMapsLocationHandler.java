@@ -24,30 +24,42 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.marcwaugh.s1829721.mpdcw2.MainActivity;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationPermissionResultListener;
 
 public class GoogleMapsLocationHandler
 		implements IApplicationPermissionResultListener
 {
 	private static final int PERM_REQUEST_LOCATION = 99;
-	IFragmentLocationWantingMap mMapFragment;
+	private IFragmentLocationWantingMap mMapFragment;
 
 	public GoogleMapsLocationHandler(IFragmentLocationWantingMap fragmentMap)
 	{
 		this.mMapFragment = fragmentMap;
+
+		// Register the permission listener
+		mMapFragment.getApplication().addPermissionListener(this);
+	}
+
+	protected void finalize()
+	{
+		// Remove the permission listener
+		mMapFragment.getApplication().removePermissionListener(this);
 	}
 
 	public void onMapReady()
 	{
+		// Get the google maps instance
 		GoogleMap map = mMapFragment.getGMapInstance();
 
-		//Initialize Google Play Services
+		// Check if we need to ask for permission,
+		//      if not then just enable location services.
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 		{
 			if (ContextCompat.checkSelfPermission(mMapFragment.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
 					== PackageManager.PERMISSION_GRANTED)
 			{
-				// Location Permission already granted
+				// Location Permission already granted, enable services
 				map.setMyLocationEnabled(true);
 			}
 			else
@@ -58,6 +70,7 @@ public class GoogleMapsLocationHandler
 		}
 		else
 		{
+			// Enable location services
 			map.setMyLocationEnabled(true);
 		}
 	}
@@ -65,27 +78,31 @@ public class GoogleMapsLocationHandler
 
 	private void checkLocationPermission()
 	{
+		// Get context and activity
 		Context ctx = mMapFragment.getContext();
+		MainActivity activity = mMapFragment.getApplication().getMainActivity();
+
 		if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
 				!= PackageManager.PERMISSION_GRANTED)
 		{
 			// Should a permission explanation be displayed
 			//  eg    "Let this application show your location"
 			// why -> "We want to display your location on a route"
-			if (ActivityCompat.shouldShowRequestPermissionRationale(mMapFragment.getMainActivity(),
+			if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
 					Manifest.permission.ACCESS_FINE_LOCATION))
 			{
 
 				// Show an explanation to the user *asynchronously* -- don't block
 				// this thread waiting for the user's response! After the user
 				// sees the explanation, try again to request the permission.
-				new AlertDialog.Builder(mMapFragment.getContext())
+				new AlertDialog.Builder(ctx)
 						.setTitle("Location Permission Needed")
-						.setMessage("This app needs the Location permission, please accept to use location functionality")
+						.setMessage("This application would like to display your current location on the map, " +
+								"To do this we will need to see your current location.")
 						.setPositiveButton("OK", (dialogInterface, i) ->
 						{
 							//Prompt the user once explanation has been shown
-							ActivityCompat.requestPermissions(mMapFragment.getMainActivity(),
+							ActivityCompat.requestPermissions(activity,
 									new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 									PERM_REQUEST_LOCATION);
 						})
@@ -95,7 +112,7 @@ public class GoogleMapsLocationHandler
 			else
 			{
 				// No explanation needed, we can request the permission.
-				ActivityCompat.requestPermissions(mMapFragment.getMainActivity(),
+				ActivityCompat.requestPermissions(mMapFragment.getApplication().getMainActivity(),
 						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 						PERM_REQUEST_LOCATION);
 			}
@@ -105,6 +122,7 @@ public class GoogleMapsLocationHandler
 	@Override
 	public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults)
 	{
+		// If the request is our perm id.
 		if (requestCode == PERM_REQUEST_LOCATION)
 		{
 			// If the results are empty then the request was denied,

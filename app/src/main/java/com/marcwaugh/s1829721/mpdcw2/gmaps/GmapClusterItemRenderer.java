@@ -53,7 +53,7 @@ public class GmapClusterItemRenderer extends DefaultClusterRenderer<GmapClusterI
 	@Override
 	protected void onClusterItemUpdated(GmapClusterItem item, Marker marker)
 	{
-		//super.onClusterItemUpdated(item, marker);
+		super.onClusterItemUpdated(item, marker);
 
 		// The cluster renderer has an issue inside its default logic where a marker's text is null by default
 		// after searching i had found this fix posted on github.

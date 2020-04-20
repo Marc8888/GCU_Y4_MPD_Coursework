@@ -270,8 +270,8 @@ public class FragmentActivityMap extends Fragment
 	}
 
 	@Override
-	public MainActivity getMainActivity()
+	public MainActivity.ApplicationMainActivity getApplication()
 	{
-		return mainActivity.getMainActivity();
+		return mainActivity;
 	}
 }
