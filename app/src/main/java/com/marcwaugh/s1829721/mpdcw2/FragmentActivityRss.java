@@ -11,7 +11,7 @@
  * respective copyright notices can be found inside /LICENSES.txt
  */
 
-package com.marcwaugh.s1829721.mpdcw2;
+package com.marcwaugh.git giort .mpdcw2;
 
 import android.content.Context;
 import android.os.Bundle;
