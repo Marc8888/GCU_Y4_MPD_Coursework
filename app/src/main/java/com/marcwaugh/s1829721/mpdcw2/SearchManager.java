@@ -123,7 +123,7 @@ public class SearchManager implements Serializable {
 		}
 
 		public boolean rssMatchesFilter(RssItem item) {
-			if (hasTitleFilter && item.getTitle().contains(manager.mFilterTitle))
+			if (hasTitleFilter && item.getTitle().toLowerCase().contains(manager.mFilterTitle.toLowerCase()))
 				return true;
 
 			// Todo: more filters
