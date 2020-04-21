@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -43,6 +44,7 @@ import com.marcwaugh.s1829721.mpdcw2.gmaps.IFragmentLocationWantingMap;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationFabListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IApplicationNavbarListener;
 import com.marcwaugh.s1829721.mpdcw2.listenerinterfaces.IVisibilityChangedListener;
+import com.marcwaugh.s1829721.mpdcw2.ui.rss_list.IRssListener;
 import com.marcwaugh.s1829721.mpdcw2.ui.rss_list.RssItemFragment;
 import com.marcwaugh.s1829721.mpdcw2.xml.RssItem;
 
@@ -50,7 +52,7 @@ import java.util.Date;
 import java.util.List;
 
 public class FragmentActivityMap extends Fragment
-		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener, IFragmentLocationWantingMap {
+		implements OnMapReadyCallback, IApplicationFabListener, IApplicationNavbarListener, IVisibilityChangedListener, IFragmentLocationWantingMap, IRssListener {
 	private Date lastTransitionDate;
 	private boolean mapReady = false;
 	private GoogleMap mMap;
@@ -105,8 +107,8 @@ public class FragmentActivityMap extends Fragment
 
 		if (isVisibleToUser) {
 			mainActivity.setFabIcon(R.drawable.ic_format_list_bulleted_white_64dp);
-			mainActivity.setFabListener(this);
-			mainActivity.setNavbarListener(this);
+			mainActivity.addFabListener(this);
+			mainActivity.addNavbarListener(this);
 
 			// Invoke the event to load the correct items
 			MenuItem mi = mainActivity.getNavbarItem();
@@ -114,8 +116,8 @@ public class FragmentActivityMap extends Fragment
 		}
 		else {
 			// Cleanup
-			mainActivity.setFabListener(null);
-			mainActivity.setNavbarListener(null);
+			mainActivity.removeFabListener(this);
+			mainActivity.removeNavbarListener(this);
 
 			rssItemFragment = null;
 			rssItemIcon = 0;
@@ -216,21 +218,27 @@ public class FragmentActivityMap extends Fragment
 			loadMarkersFromRss(rssItemFragment, rssItemIcon);
 	}
 
-	private void loadMarkersFromRss(RssItemFragment rssItems, @DrawableRes int drawableResourceId) {
-		if (rssItems == null || drawableResourceId == -1 || drawableResourceId == 0)
+	private void loadMarkersFromRss(RssItemFragment rssFragment, @DrawableRes int drawableResourceId) {
+		if (rssFragment == null || drawableResourceId == -1 || drawableResourceId == 0)
 			//throw new RuntimeException("FragmentActivityMap: RssItems or Drawable id is null!");
 			return;
 
 		// Get the items
-		List<RssItem> listRssItems = rssItems.getRssItems();
-		if (listRssItems == null) return;
+		List<RssItem> listRssItems = rssFragment.getRssItemsFiltered();
 
 		// Clear markers from cluster
 		mClusterManager.clearItems();
 
 		// Check if we have no items, if none then just return
-		if (listRssItems.size() == 0) {
+		if (listRssItems == null || listRssItems.size() == 0) {
 			mClusterManager.cluster();
+
+			Toast.makeText(getContext(), "Loading data, Please wait...", Toast.LENGTH_LONG).show();
+
+			// Attempt to reload the rss
+			rssFragment.addRssListener(this);
+			rssFragment.refreshDataset();
+
 			return;
 		}
 
@@ -275,5 +283,15 @@ public class FragmentActivityMap extends Fragment
 	@Override
 	public MainActivity.MainActivityHelper getApplication() {
 		return mainActivity;
+	}
+
+	@Override
+	public void rssItemsLoaded(RssItemFragment fragment, List<RssItem> items) {
+		loadMarkersFromRss(fragment, rssItemIcon);
+	}
+
+	@Override
+	public void rssItemsFailed(RssItemFragment fragment) {
+		loadMarkersFromRss(fragment, rssItemIcon);
 	}
 }

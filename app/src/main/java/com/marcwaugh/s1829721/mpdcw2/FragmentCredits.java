@@ -108,13 +108,13 @@ public class FragmentCredits extends Fragment
 			return;
 
 		if (isVisibleToUser) {
-			mainActivity.setFabListener(this);
+			mainActivity.addFabListener(this);
 			mainActivity.setNavbarVisibility(false); // Hide the navbar
 			mainActivity.setFabIcon(R.drawable.ic_format_list_bulleted_white_64dp);
 			mainActivity.setTitle("Credits");
 		}
 		else {
-			mainActivity.setFabListener(null);
+			mainActivity.removeFabListener(this);
 			mainActivity.setNavbarVisibility(true); // Show the navbar
 		}
 	}

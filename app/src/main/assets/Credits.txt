@@ -6,6 +6,10 @@
 * Student Id:	S1829721
 *
 
+# READ ME WHEN USING LANDSCAPE
+If viewing in landscape please click on the top right
+-> Credits, to go back to the normal list view!!!!!!!
+
 # Source licenses
 com.marcwaugh.s1829721.mpdcw2.gmaps.GmapClusterItemRenderer$onClusterItemUpdated
 - Fix for null marker text when loading cluster manager

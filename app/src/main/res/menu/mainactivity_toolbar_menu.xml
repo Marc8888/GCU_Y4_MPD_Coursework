@@ -13,8 +13,10 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/toolbarCredits"
         android:title="@string/toolbar_credits" />
+    <item
+        android:id="@+id/toolbarSearch"
+        android:title="@string/toolbar_search" />
 </menu>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c)  2020-2020, Marc Waugh
+  ~
+  ~ File:		fragment_search.xml
+  ~ Module:		Mobile Platform Development
+  ~ Date:		2020
+  ~ Student Id:	S1829721
+  ~
+  ~ Please note that this copyright header might appear on CC assets such as
+  ~ SVG vector images/icons from 3rd parties. For files such as these their
+  ~ respective copyright notices can be found inside /LICENSES.txt
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="80dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/btn_ClearFilter"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Clear text filter"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_ApplyFilter"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="@string/apply_filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/editText_FilterbyTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="100dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/filter_by_title"
+            app:layout_constraintEnd_toStartOf="@+id/btn_FilterByTitle_Clear"
+            app:layout_constraintTop_toBottomOf="@id/constraintLayout" />
+
+        <Button
+            android:id="@+id/btn_FilterByTitle_Clear"
+            android:layout_marginTop="32dp"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+        <!--    =================================================    -->
+
+        <TextView
+            android:id="@+id/lblFilterAfterDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Filter after date"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_FilterByTitle_Clear" />
+
+        <TextView
+            android:id="@+id/lblFilterAfterDate_Display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Not filtering: after date"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblFilterAfterDate" />
+
+        <Button
+            android:id="@+id/btn_FilterAfterDate_Clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@string/clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblFilterAfterDate_Display" />
+
+        <Button
+            android:id="@+id/btn_FilterAfterDate_Set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="Set Date"
+            app:layout_constraintEnd_toStartOf="@+id/btn_FilterAfterDate_Clear"
+            app:layout_constraintTop_toBottomOf="@+id/lblFilterAfterDate_Display" />
+
+        <!--    =================================================    -->
+
+
+        <TextView
+            android:id="@+id/lblFilterBeforeDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Filter before date"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_FilterAfterDate_Set" />
+
+        <TextView
+            android:id="@+id/lblFilterBeforeDate_Display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Not filtering: Before date"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblFilterBeforeDate" />
+
+        <Button
+            android:id="@+id/btn_FilterBeforeDate_Clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@string/clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblFilterBeforeDate_Display" />
+
+        <Button
+            android:id="@+id/btn_FilterBeforeDate_Set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="Set Date"
+            app:layout_constraintEnd_toStartOf="@+id/btn_FilterBeforeDate_Clear"
+            app:layout_constraintTop_toBottomOf="@+id/lblFilterBeforeDate_Display" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

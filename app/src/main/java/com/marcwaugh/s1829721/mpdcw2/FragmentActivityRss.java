@@ -70,23 +70,26 @@ public class FragmentActivityRss extends Fragment
 		this.mainActivity = appMainApp;
 		lastTransitionDate = new Date();
 
-		if (fragRssRoadworks == null)
-			fragRssRoadworks = RssItemFragment.newInstance(urlTSRoadWorks).setListener(this);
-		if (fragRssCIncidents == null)
-			fragRssCIncidents = RssItemFragment.newInstance(urlTSCurrentIncidents).setListener(this);
-		if (fragRssRoadworksPlanned == null)
-			fragRssRoadworksPlanned = RssItemFragment.newInstance(urlTSRoadWorksPlanned).setListener(this);
+		getFragRssRoadworks();
+		getFragRssCIncidents();
+		getFragRssRoadworksPlanned();
 	}
 
 	RssItemFragment getFragRssRoadworks() {
+		if (fragRssRoadworks == null)
+			fragRssRoadworks = RssItemFragment.newInstance(urlTSRoadWorks).setInteractionListener(this);
 		return fragRssRoadworks;
 	}
 
 	RssItemFragment getFragRssRoadworksPlanned() {
+		if (fragRssRoadworksPlanned == null)
+			fragRssRoadworksPlanned = RssItemFragment.newInstance(urlTSRoadWorksPlanned).setInteractionListener(this);
 		return fragRssRoadworksPlanned;
 	}
 
 	RssItemFragment getFragRssCIncidents() {
+		if (fragRssCIncidents == null)
+			fragRssCIncidents = RssItemFragment.newInstance(urlTSCurrentIncidents).setInteractionListener(this);
 		return fragRssCIncidents;
 	}
 
@@ -103,8 +106,8 @@ public class FragmentActivityRss extends Fragment
 		if (isVisibleToUser) {
 			// Set the icon and listener
 			mainActivity.setFabIcon(R.drawable.ic_map_white_64dp);
-			mainActivity.setNavbarListener(this);
-			mainActivity.setFabListener(this);
+			mainActivity.addNavbarListener(this);
+			mainActivity.addFabListener(this);
 
 			// Invoke the event to load the correct items
 			MenuItem mi = mainActivity.getNavbarItem();
@@ -116,8 +119,8 @@ public class FragmentActivityRss extends Fragment
 		}
 		else {
 			// Cleanup
-			mainActivity.setFabListener(null);
-			mainActivity.setNavbarListener(null);
+			mainActivity.removeFabListener(this);
+			mainActivity.removeNavbarListener(this);
 		}
 
 		isVisible = isVisibleToUser;

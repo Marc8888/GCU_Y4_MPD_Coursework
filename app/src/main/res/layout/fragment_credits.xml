@@ -17,24 +17,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textViewCredits"
+
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:inputType="textMultiLine"
-        android:lines="30"
-        android:scrollbars="horizontal|vertical"
-
-        android:scrollHorizontally="true"
-
-        android:singleLine="false"
-        android:textSize="15sp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewCredits"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"
+            android:lines="30"
+            android:scrollbars="horizontal"
+
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="14dp"
+
+            android:scrollHorizontally="true"
+
+            android:singleLine="false"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

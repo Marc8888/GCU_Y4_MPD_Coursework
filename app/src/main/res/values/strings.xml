@@ -20,10 +20,15 @@
 
     <string name="title_activity_main">MainActivity</string>
     <string name="toolbar_credits">Credits</string>
+    <string name="toolbar_search">Search</string>
 
     <string name="student_id">S1829721</string>
     <string name="student_name">Marc Waugh</string>
 
     <string name="button_OpenMap">Open Map</string>
     <string name="title_activity_fragment_map">Map</string>
+    <string name="apply_filter">Apply Text Filter</string>
+    <string name="filter_by_title">Filter by Title</string>
+    <string name="clear">Clear</string>
+    <string name="filter_by_start_date">Filter by start date</string>
 </resources>

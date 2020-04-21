@@ -19,6 +19,9 @@
     android:name="com.marcwaugh.s1829721.mpdcw2.RssItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     app:layoutManager="LinearLayoutManager"
+    android:scrollbars="vertical"
+
     tools:context=".ui.rss_list.RssItemFragment"
     tools:listitem="@layout/fragment_rss_item" />

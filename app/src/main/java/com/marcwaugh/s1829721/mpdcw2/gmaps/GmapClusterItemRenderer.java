@@ -38,6 +38,9 @@ public class GmapClusterItemRenderer extends DefaultClusterRenderer<GmapClusterI
 
 	// SOURCE: https://stackoverflow.com/questions/42365658/custom-marker-in-google-maps-in-android-with-vector-asset-icon
 	public static BitmapDescriptor BitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
+		if (context == null)
+			return null;
+
 		Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_place_blue_64dp);
 		background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
 
